@@ -1,0 +1,12 @@
+version: "3"
+services:
+  mysql:
+    container_name: mysql
+    image: mysql
+    volumes:
+      - ./flights:/tmp/sql
+    command: --secure-file-priv=/tmp/sql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: password
+    network_mode: host
