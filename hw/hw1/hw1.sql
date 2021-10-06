@@ -74,6 +74,6 @@ select `name` as `airline_name`, sum(`departure_delay`) as `total_departure_dela
 -- QUESTION 5 Separator. DO NOT DELETE
 select "QUESTION 5";
 -- Put your Q5 SQL statements here
-create temporary table `cancellation_count_table` select name, count(*) as `cancellation_count` from `flights`, `carriers` where `flights`.`cancelled` = 1 and `flights`.`origin_city` = "New York NY" and `flights`.`carrier_id` = `carriers`.`cid` group by `carrier_id`;
-create temporary table `total_count_table` select name, count(*) as `total_count` from `flights`, `carriers` where `flights`.`origin_city` = "New York NY" and `flights`.`carrier_id` = `carriers`.`cid` group by `carrier_id`;
-select name as `airline_name`, (`cancellation_count` / `total_count`) as `cancellation_percentage` from `cancellation_count_table` natural join `total_count_table` having `cancellation_percentage` > 0.005 order by `cancellation_percentage` asc;
+create temporary table `cancellation_count_table` select `name`, count(*) as `cancellation_count` from `flights`, `carriers` where `flights`.`cancelled` = 1 and `flights`.`origin_city` = "New York NY" and `flights`.`carrier_id` = `carriers`.`cid` group by `carrier_id`;
+create temporary table `total_count_table` select `name`, count(*) as `total_count` from `flights`, `carriers` where `flights`.`origin_city` = "New York NY" and `flights`.`carrier_id` = `carriers`.`cid` group by `carrier_id`;
+select `name` as `airline_name`, (`cancellation_count` / `total_count`) as `cancellation_percentage` from `cancellation_count_table` natural join `total_count_table` having `cancellation_percentage` > 0.005 order by `cancellation_percentage` asc;
