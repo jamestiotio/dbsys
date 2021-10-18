@@ -4,7 +4,7 @@
 
 ## Exercise 1
 
-1. Hit rate: 6 / 14. Final buffer state contains the items: D, E, F, G.
+1. Hit rate: 3 / 7. Final buffer state contains the items: D, E, F, G.
 2. Hit rate: 1 / 7.
 3. MRU would be better than LRU when there are repeating sequences of data access patterns (e.g., A B C D E A B C D E A B C D E...) or when the most recently accessed data is not going to be used/accessed any more any time soon (such as the case for bus/subway train arrivals, etc.).
 
