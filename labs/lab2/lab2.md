@@ -1,5 +1,7 @@
 # SUTD ISTD/CSD 2021 50.043 Database Systems Lab 2 Exercises
 
+> James Raphael Tiovalen / 1004555
+
 ## Exercise 1
 
 A new recording studio needs to maintain the following information:

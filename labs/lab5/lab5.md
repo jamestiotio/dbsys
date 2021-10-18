@@ -1,0 +1,17 @@
+# SUTD ISTD/CSD 2021 50.043 Database Systems Lab 5 Exercises
+
+> James Raphael Tiovalen / 1004555
+
+## Exercise 1
+
+1. Hit rate: 6 / 14. Final buffer state contains the items: D, E, F, G.
+2. Hit rate: 1 / 7.
+3. MRU would be better than LRU when there are repeating sequences of data access patterns (e.g., A B C D E A B C D E A B C D E...) or when the most recently accessed data is not going to be used/accessed any more any time soon (such as the case for bus/subway train arrivals, etc.).
+
+## Exercise 2
+
+Coming soon!
+
+## Exercise 3
+
+![Lab 5 Exercise 3Hash Table](./lab5_ex3_hash_table.png)
