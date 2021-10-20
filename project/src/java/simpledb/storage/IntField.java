@@ -31,10 +31,12 @@ public class IntField implements Field {
         return Integer.toString(value);
     }
 
+    @Override
     public int hashCode() {
         return value;
     }
 
+    @Override
     public boolean equals(Object field) {
         if (!(field instanceof IntField)) return false;
         return ((IntField) field).value == value;

@@ -10,7 +10,12 @@ import java.util.Iterator;
  * with the data for each field.
  */
 public class Tuple implements Serializable {
-
+    /**
+     * A Tuple contains fields, a TupleDesc object, and a recordID
+     */ 
+    private Field[] tupleFields;
+    private TupleDesc tupleSchema;
+    private RecordId recordId;
     private static final long serialVersionUID = 1L;
 
     /**
@@ -21,15 +26,15 @@ public class Tuple implements Serializable {
      *            instance with at least one field.
      */
     public Tuple(TupleDesc td) {
-        // some code goes here
+        this.tupleFields = new Field[td.numFields()];
+        this.tupleSchema = td;
     }
 
     /**
      * @return The TupleDesc representing the schema of this tuple.
      */
     public TupleDesc getTupleDesc() {
-        // some code goes here
-        return null;
+        return this.tupleSchema;
     }
 
     /**
@@ -37,8 +42,7 @@ public class Tuple implements Serializable {
      *         be null.
      */
     public RecordId getRecordId() {
-        // some code goes here
-        return null;
+        return this.recordId;
     }
 
     /**
@@ -48,7 +52,7 @@ public class Tuple implements Serializable {
      *            the new RecordId for this tuple.
      */
     public void setRecordId(RecordId rid) {
-        // some code goes here
+        this.recordId = rid;
     }
 
     /**
@@ -60,7 +64,11 @@ public class Tuple implements Serializable {
      *            new value for the field.
      */
     public void setField(int i, Field f) {
-        // some code goes here
+        if (!this.isValidIndex(i)) {
+            throw new IllegalArgumentException("Invalid field index value.");
+        }
+
+        this.tupleFields[i] = f;
     }
 
     /**
@@ -70,8 +78,15 @@ public class Tuple implements Serializable {
      *            field index to return. Must be a valid index.
      */
     public Field getField(int i) {
-        // some code goes here
-        return null;
+        if (!this.isValidIndex(i)) {
+            throw new IllegalArgumentException("Invalid field index value.");
+        }
+
+        return this.tupleFields[i];
+    }
+
+    private boolean isValidIndex(int index) {
+        return index >= 0 && index < this.tupleFields.length;
     }
 
     /**
@@ -82,9 +97,21 @@ public class Tuple implements Serializable {
      *
      * where \t is any whitespace (except a newline)
      */
+    @Override
     public String toString() {
-        // some code goes here
-        throw new UnsupportedOperationException("Implement this");
+        String description = "";
+
+        for (int i = 0; i < this.tupleFields.length; i++) {
+            if (this.tupleFields[i] == null) {
+                description += "null\t";
+            } else {
+                description += this.tupleFields[i].toString() + "\t";
+            }
+        }
+
+        // Chop off the final whitespace character
+        description = description.substring(0, description.length() - 1);
+        return description;
     }
 
     /**
@@ -93,15 +120,14 @@ public class Tuple implements Serializable {
      * */
     public Iterator<Field> fields()
     {
-        // some code goes here
-        return null;
+        return Arrays.asList(this.tupleFields).iterator();
     }
 
     /**
-     * reset the TupleDesc of this tuple (only affecting the TupleDesc)
+     * Reset the TupleDesc of this tuple (only affecting the TupleDesc).
      * */
     public void resetTupleDesc(TupleDesc td)
     {
-        // some code goes here
+        this.tupleSchema = td;
     }
 }

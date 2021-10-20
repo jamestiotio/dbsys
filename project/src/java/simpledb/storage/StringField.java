@@ -40,12 +40,14 @@ public class StringField implements Field {
 		return value;
 	}
 
+	@Override
 	public int hashCode() {
 		return value.hashCode();
 	}
 
+	@Override
 	public boolean equals(Object field) {
-	    if (!(field instanceof StringField)) return false;
+		if (!(field instanceof StringField)) return false;
 		return ((StringField) field).value.equals(value);
 	}
 

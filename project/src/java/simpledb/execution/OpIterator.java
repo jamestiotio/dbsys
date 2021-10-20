@@ -15,7 +15,7 @@ import java.util.*;
  * child iterator open methods, and in a close method, an iterator
  * should call its children's close methods.
  */
-public interface OpIterator extends Serializable{
+public interface OpIterator extends Serializable {
   /**
    * Opens the iterator. This must be called before any of the other methods.
    * @throws DbException when there are problems opening/accessing the database.

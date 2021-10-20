@@ -3,12 +3,13 @@ import simpledb.common.DbException;
 import simpledb.transaction.TransactionAbortedException;
 
 import java.util.*;
+import java.io.Serializable;
 
 /**
- * DbFileIterator is the iterator interface that all SimpleDB Dbfile should
+ * DbFileIterator is the iterator interface that all SimpleDB DbFile should
  * implement.
  */
-public interface DbFileIterator{
+public interface DbFileIterator extends Serializable {
     /**
      * Opens the iterator
      * @throws DbException when there are problems opening/accessing the database.

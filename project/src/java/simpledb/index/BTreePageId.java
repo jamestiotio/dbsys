@@ -74,8 +74,9 @@ public class BTreePageId implements PageId {
 	 *   key in a hash table in the BufferPool, for example.)
 	 * @see BufferPool
 	 */
+	@Override
 	public int hashCode() {
-	    return Objects.hash(tableId, pgNo, pgcateg);
+		return Objects.hash(tableId, pgNo, pgcateg);
 	}
 
 	/**
@@ -85,6 +86,7 @@ public class BTreePageId implements PageId {
 	 * @return true if the objects are equal (e.g., page numbers, table
 	 *   ids and pgcateg are the same)
 	 */
+	@Override
 	public boolean equals(Object o) {
 		if (!(o instanceof BTreePageId))
 			return false;

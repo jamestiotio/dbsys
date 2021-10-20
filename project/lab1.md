@@ -272,7 +272,7 @@ file as you will need to access these objects.
 
 
 At this point, your code should pass the unit tests TupleTest and TupleDescTest. At this point, modifyRecordId() should
-fail because you havn't implemented it yet.
+fail because you haven't implemented it yet.
 
 ### 2.3. Catalog
 
@@ -415,7 +415,7 @@ layout of pages.
 You will also need to implement an Iterator over the tuples in the page, which may involve an auxiliary class or data
 structure.
 
-At this point, your code should pass the unit tests in HeapPageIdTest, RecordIDTest, and HeapPageReadTest.
+At this point, your code should pass the unit tests in HeapPageIdTest, RecordIdTest, and HeapPageReadTest.
 
 
 <p> 
@@ -570,7 +570,7 @@ repeatedly calls `hasNext` and `next` on the `SeqScan` operator. As tuples are o
 printed out on the command line.
 
 We **strongly recommend** you try this out as a fun end-to-end test that will help you get experience writing your own
-test programs for simpledb. You should create the file "test.java" in the src/java/simpledb directory with the code above, 
+test programs for SimpleDB. You should create the file "test.java" in the `src/java/simpledb` directory with the code above, 
 and you should add some "import" statement above the code, 
 and place the `some_data_file.dat` file in the top level directory. Then run:
 

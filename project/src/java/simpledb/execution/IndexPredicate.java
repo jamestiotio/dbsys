@@ -47,5 +47,4 @@ public class IndexPredicate implements Serializable {
             return false;
         return (op.equals(ipd.op) && fieldvalue.equals(ipd.fieldvalue));
     }
-
 }
