@@ -504,7 +504,7 @@ Suppose you have a data file, "some_data_file.txt", with the following contents:
 
 ```
 1,1,1
-2,2,2 
+2,2,2
 3,4,4
 ```
 
@@ -513,7 +513,7 @@ You can convert this into a binary file that SimpleDB can query as follows:
 <p>
 ```java -jar dist/simpledb.jar convert some_data_file.txt 3```
 <p>
-Here, the argument "3" tells conver that the input has 3 columns.
+Here, the argument "3" tells convert that the input has 3 columns.
 <p>
 The following code implements a simple selection query over this file. This code is equivalent to the SQL statement `SELECT * FROM some_data_file`.
 
@@ -553,7 +553,6 @@ public class test {
             System.out.println ("Exception : " + e);
         }
     }
-
 }
 ```
 

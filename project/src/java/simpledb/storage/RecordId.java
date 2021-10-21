@@ -1,6 +1,7 @@
 package simpledb.storage;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * A RecordId is a reference to a specific tuple on a specific page of a
@@ -65,6 +66,7 @@ public class RecordId implements Serializable {
     public int hashCode() {
         // The odd prime number 31 was chosen to reduce the probability of collisions, as well as its ease of optimization.
         // For more explanation, check the book Effective Java written by Joshua Bloch.
-        return 31 * this.getPageId().hashCode() + Integer.hashCode(this.tupleno);
+        // return 31 * this.getPageId().hashCode() + Integer.hashCode(this.tupleno);
+        return Objects.hash(this.getPageId(), this.tupleno);
     }
 }

@@ -1,5 +1,7 @@
 package simpledb.storage;
 
+import java.util.Objects;
+
 /** Unique identifier for HeapPage objects. */
 public class HeapPageId implements PageId {
     private int tableId;
@@ -40,7 +42,8 @@ public class HeapPageId implements PageId {
     public int hashCode() {
         // The odd prime number 31 was chosen to reduce the probability of collisions, as well as its ease of optimization.
         // For more explanation, check the book Effective Java written by Joshua Bloch.
-        return 31 * Integer.hashCode(this.tableId) + Integer.hashCode(this.pgNo);
+        // return 31 * Integer.hashCode(this.tableId) + Integer.hashCode(this.pgNo);
+        return Objects.hash(this.tableId, this.pgNo);
     }
 
     /**

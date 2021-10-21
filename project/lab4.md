@@ -258,7 +258,7 @@ After completing this exercise, you should be able to pass the unit tests in
 `BTreeFileInsertTest.java`. You should also be able to pass the system tests
 in `systemtest/BTreeFileInsertTest.java`.  Some of the system test cases may
 take a few seconds to complete. These files will test that your code inserts
-tuples and splits pages correcty, and also handles duplicate tuples.
+tuples and splits pages correctly, and also handles duplicate tuples.
 
 <!-- After completing this exercise, you should be able to pass the unit tests
 in `BTreeDeadlockTest.java` and `BTreeInsertTest.java`. Some of the test cases

@@ -17,7 +17,7 @@ import java.util.List;
 
 public class HeapFileEncoder {
 
-  /** Convert the specified tuple list (with only integer fields) into a binary
+    /** Convert the specified tuple list (with only integer fields) into a binary
    * page file. <br>
    *
    * The format of the output file will be as specified in HeapPage and
@@ -32,43 +32,43 @@ public class HeapFileEncoder {
    * @param numFields the number of fields in each input tuple
    * @throws IOException if the temporary/output file can't be opened
    */
-  public static void convert(List<List<Integer>> tuples, File outFile, int npagebytes, int numFields) throws IOException {
-      File tempInput = File.createTempFile("tempTable", ".txt");
-      tempInput.deleteOnExit();
-      BufferedWriter bw = new BufferedWriter(new FileWriter(tempInput));
-      for (List<Integer> tuple : tuples) {
-          int writtenFields = 0;
-          for (Integer field : tuple) {
-              writtenFields++;
-              if (writtenFields > numFields) {
-                  throw new RuntimeException("Tuple has more than " + numFields + " fields: (" +
-                          Utility.listToString(tuple) + ")");
-              }
-              bw.write(String.valueOf(field));
-              if (writtenFields < numFields) {
-                  bw.write(',');
-              }
-          }
-          bw.write('\n');
-      }
-      bw.close();
-      convert(tempInput, outFile, npagebytes, numFields);
-  }
+    public static void convert(List<List<Integer>> tuples, File outFile, int npagebytes, int numFields) throws IOException {
+        File tempInput = File.createTempFile("tempTable", ".txt");
+        tempInput.deleteOnExit();
+        BufferedWriter bw = new BufferedWriter(new FileWriter(tempInput));
+        for (List<Integer> tuple : tuples) {
+            int writtenFields = 0;
+            for (Integer field : tuple) {
+                writtenFields++;
+                if (writtenFields > numFields) {
+                    throw new RuntimeException("Tuple has more than " + numFields + " fields: (" +
+                            Utility.listToString(tuple) + ")");
+                }
+                bw.write(String.valueOf(field));
+                if (writtenFields < numFields) {
+                    bw.write(',');
+                }
+            }
+            bw.write('\n');
+        }
+        bw.close();
+        convert(tempInput, outFile, npagebytes, numFields);
+    }
 
-      public static void convert(File inFile, File outFile, int npagebytes,
-                 int numFields) throws IOException {
-      Type[] ts = new Type[numFields];
-          Arrays.fill(ts, Type.INT_TYPE);
-      convert(inFile,outFile,npagebytes,numFields,ts);
-      }
+        public static void convert(File inFile, File outFile, int npagebytes,
+                    int numFields) throws IOException {
+        Type[] ts = new Type[numFields];
+        Arrays.fill(ts, Type.INT_TYPE);
+        convert(inFile,outFile,npagebytes,numFields,ts);
+        }
 
-  public static void convert(File inFile, File outFile, int npagebytes,
-                 int numFields, Type[] typeAr)
-      throws IOException {
-      convert(inFile,outFile,npagebytes,numFields,typeAr,',');
-  }
+    public static void convert(File inFile, File outFile, int npagebytes,
+                    int numFields, Type[] typeAr)
+        throws IOException {
+        convert(inFile,outFile,npagebytes,numFields,typeAr,',');
+    }
 
-   /** Convert the specified input text file into a binary
+    /** Convert the specified input text file into a binary
     * page file. <br>
     * Assume format of the input file is (note that only integer fields are
     * supported):<br>
@@ -89,16 +89,15 @@ public class HeapFileEncoder {
     * @throws IOException if the input/output file can't be opened or a
     *   malformed input line is encountered
     */
-  public static void convert(File inFile, File outFile, int npagebytes,
-                 int numFields, Type[] typeAr, char fieldSeparator)
-      throws IOException {
-
-      int nrecbytes = 0;
-      for (int i = 0; i < numFields ; i++) {
-          nrecbytes += typeAr[i].getLen();
-      }
+    public static void convert(File inFile, File outFile, int npagebytes,
+                    int numFields, Type[] typeAr, char fieldSeparator)
+        throws IOException {
+        int nrecbytes = 0;
+        for (int i = 0; i < numFields ; i++) {
+            nrecbytes += typeAr[i].getLen();
+        }
       int nrecords = (npagebytes * 8) /  (nrecbytes * 8 + 1);  //floor comes for free
-      
+
     //  per record, we need one bit; there are nrecords per page, so we need
     // nrecords bits, i.e., ((nrecords/32)+1) integers.
     int nheaderbytes = (nrecords / 8);
@@ -223,5 +222,5 @@ public class HeapFileEncoder {
     }
     br.close();
     os.close();
-  }
+    }
 }

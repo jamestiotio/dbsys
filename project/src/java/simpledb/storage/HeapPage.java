@@ -294,8 +294,7 @@ public class HeapPage implements Page {
      * Returns true if associated slot on this page is filled.
      */
     public boolean isSlotUsed(int i) {
-        BitSet headerBitsBigEndian = BitSet.valueOf(this.header);
-        return headerBitsBigEndian.get(i);
+        return ((this.header[i / 8] & 0xFF) & (1 << (i % 8))) != 0;
     }
 
     /**
@@ -304,6 +303,11 @@ public class HeapPage implements Page {
     private void markSlotUsed(int i, boolean value) {
         // some code goes here
         // not necessary for lab1
+        if (value) {
+            this.header[i / 8] |= (1 << (i % 8));
+        } else {
+            this.header[i / 8] &= ~(1 << (i % 8));
+        }
     }
 
     /**
