@@ -27,6 +27,8 @@ In addition to the academic integrity policy (as discussed in the lecture), take
 
 This database system is only for educational and learning purposes only! It is very simplistic, highly unoptimized, and is definitely not suitable for real-life production use.
 
+Future work might include implementing query optimization, as well as rollback and recovery.
+
 ## Acknowledgement
 
-The labs are modified from the MIT 6830 course. We thank the MIT staff for the materials.
+The labs are modified from the MIT 6.830 course. We thank the MIT staff for the materials.
