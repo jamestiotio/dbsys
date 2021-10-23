@@ -2,7 +2,6 @@
 
 ### Due: Sunday 7/11 11:59PM
 
-
 In this lab assignment, you will write a set of operators for SimpleDB to implement table modifications (e.g., insert
 and delete records), selections, joins, and aggregates. These will build on top of the foundation that you wrote in Lab
 1 to provide you with a database system that can perform simple queries over multiple tables.
@@ -21,7 +20,7 @@ so we encourage you to **start early**!
 
 You should begin with the code you submitted for Lab 1 (if you did not
 submit code for Lab 1, or your solution didn't work properly, contact us to
-discuss options).  
+discuss options).
 
 ### 1.1. Implementation hints
 
@@ -37,24 +36,24 @@ Section 3 for a complete discussion of grading and list of the tests you will ne
 Here's a rough outline of one way you might proceed with your SimpleDB implementation; more details on the steps in this
 outline, including exercises, are given in Section 2 below.
 
-* Implement the operators `Filter` and `Join` and verify that their corresponding tests work. The Javadoc comments for
+- Implement the operators `Filter` and `Join` and verify that their corresponding tests work. The Javadoc comments for
   these operators contain details about how they should work. We have given you implementations of
   `Project` and `OrderBy` which may help you understand how other operators work.
 
-* Implement `IntegerAggregator` and `StringAggregator`. Here, you will write the logic that actually computes an
+- Implement `IntegerAggregator` and `StringAggregator`. Here, you will write the logic that actually computes an
   aggregate over a particular field across multiple groups in a sequence of input tuples. Use integer division for
   computing the average, since SimpleDB only supports integers. StringAggegator only needs to support the COUNT
   aggregate, since the other operations do not make sense for strings.
 
-* Implement the `Aggregate` operator. As with other operators, aggregates implement the `OpIterator` interface so that
+- Implement the `Aggregate` operator. As with other operators, aggregates implement the `OpIterator` interface so that
   they can be placed in SimpleDB query plans. Note that the output of an `Aggregate` operator is an aggregate value of
   an entire group for each call to `next()`, and that the aggregate constructor takes the aggregation and grouping
   fields.
 
-* Implement the methods related to tuple insertion, deletion, and page eviction in `BufferPool`. You do not need to
+- Implement the methods related to tuple insertion, deletion, and page eviction in `BufferPool`. You do not need to
   worry about transactions at this point.
 
-* Implement the `Insert` and `Delete` operators. Like all operators,  `Insert` and `Delete` implement
+- Implement the `Insert` and `Delete` operators. Like all operators, `Insert` and `Delete` implement
   `OpIterator`, accepting a stream of tuples to insert or delete and outputting a single tuple with an integer field
   that indicates the number of tuples inserted or deleted. These operators will need to call the appropriate methods
   in `BufferPool` that actually modify the pages on disk. Check that the tests for inserting and deleting tuples work
@@ -82,10 +81,10 @@ from iterator classes, and in its place put `implements OpIterator`.
 Recall that SimpleDB OpIterator classes implement the operations of the relational algebra. You will now implement two
 operators that will enable you to perform queries that are slightly more interesting than a table scan.
 
-* *Filter*: This operator only returns tuples that satisfy a `Predicate` that is specified as part of its constructor.
+- _Filter_: This operator only returns tuples that satisfy a `Predicate` that is specified as part of its constructor.
   Hence, it filters out any tuples that do not match the predicate.
 
-* *Join*: This operator joins tuples from its two children according to a `JoinPredicate` that is passed in as part of
+- _Join_: This operator joins tuples from its two children according to a `JoinPredicate` that is passed in as part of
   its constructor. We only require a simple nested loops join, but you may explore more interesting join
   implementations. Describe your implementation in your lab writeup.
 
@@ -93,14 +92,14 @@ operators that will enable you to perform queries that are slightly more interes
 
 Implement the skeleton methods in:
 
-***  
+---
 
-* src/java/simpledb/execution/Predicate.java
-* src/java/simpledb/execution/JoinPredicate.java
-* src/java/simpledb/execution/Filter.java
-* src/java/simpledb/execution/Join.java
+- src/java/simpledb/execution/Predicate.java
+- src/java/simpledb/execution/JoinPredicate.java
+- src/java/simpledb/execution/Filter.java
+- src/java/simpledb/execution/Join.java
 
-***  
+---
 
 At this point, your code should pass the unit tests in PredicateTest, JoinPredicateTest, FilterTest, and JoinTest.
 Furthermore, you should be able to pass the system tests FilterTest and JoinTest.
@@ -127,13 +126,13 @@ do not need to worry about the situation where the number of groups exceeds avai
 
 Implement the skeleton methods in:
 
-***  
+---
 
-* src/java/simpledb/execution/IntegerAggregator.java
-* src/java/simpledb/execution/StringAggregator.java
-* src/java/simpledb/execution/Aggregate.java
+- src/java/simpledb/execution/IntegerAggregator.java
+- src/java/simpledb/execution/StringAggregator.java
+- src/java/simpledb/execution/Aggregate.java
 
-***  
+---
 
 At this point, your code should pass the unit tests IntegerAggregatorTest, StringAggregatorTest, and AggregateTest.
 Furthermore, you should be able to pass the AggregateTest system test.
@@ -141,7 +140,7 @@ Furthermore, you should be able to pass the AggregateTest system test.
 ### 2.3. HeapFile Mutability
 
 Now, we will begin to implement methods to support modifying tables. We begin at the level of individual pages and
-files. There are two main sets of operations:  adding tuples and removing tuples.
+files. There are two main sets of operations: adding tuples and removing tuples.
 
 **Removing tuples:** To remove a tuple, you will need to implement
 `deleteTuple`. Tuples contain `RecordIDs` which allow you to find the page they reside on, so this should be as simple
@@ -156,15 +155,13 @@ the physical file on disk. You will need to ensure that the RecordID in the tupl
 
 Implement the remaining skeleton methods in:
 
-***  
+---
 
-* src/java/simpledb/storage/HeapPage.java
-* src/java/simpledb/storage/HeapFile.java<br>
+- src/java/simpledb/storage/HeapPage.java
+- src/java/simpledb/storage/HeapFile.java<br>
   (Note that you do not necessarily need to implement writePage at this point).
 
-***
-
-
+---
 
 To implement HeapPage, you will need to modify the header bitmap for methods such as <tt>insertTuple()</tt> and <tt>
 deleteTuple()</tt>. You may find that the <tt>getNumEmptySlots()</tt> and <tt>isSlotUsed()</tt> methods we asked you to
@@ -178,13 +175,12 @@ implementation of transactions in the next lab will not work properly.
 
 Implement the following skeleton methods in <tt>src/java/simpledb/storage/BufferPool.java</tt>:
 
-***  
+---
 
-* insertTuple()
-* deleteTuple()
+- insertTuple()
+- deleteTuple()
 
-***  
-
+---
 
 These methods should call the appropriate methods in the HeapFile that belong to the table being modified (this extra
 level of indirection is needed to support other types of files &mdash; like indices &mdash; in the future).
@@ -202,22 +198,22 @@ For plans that implement `insert` and `delete` queries, the top-most operator is
 operator that modifies the pages on disk. These operators return the number of affected tuples. This is implemented by
 returning a single tuple with one integer field, containing the count.
 
-* *Insert*: This operator adds the tuples it reads from its child operator to the `tableid` specified in its
+- _Insert_: This operator adds the tuples it reads from its child operator to the `tableid` specified in its
   constructor. It should use the `BufferPool.insertTuple()` method to do this.
 
-* *Delete*: This operator deletes the tuples it reads from its child operator from the `tableid` specified in its
+- _Delete_: This operator deletes the tuples it reads from its child operator from the `tableid` specified in its
   constructor. It should use the `BufferPool.deleteTuple()` method to do this.
 
 **Exercise 4.**
 
 Implement the skeleton methods in:
 
-***  
+---
 
-* src/java/simpledb/execution/Insert.java
-* src/java/simpledb/execution/Delete.java
+- src/java/simpledb/execution/Insert.java
+- src/java/simpledb/execution/Delete.java
 
-***  
+---
 
 At this point, your code should pass the unit tests in InsertTest. We have not provided unit tests for `Delete`.
 Furthermore, you should be able to pass the InsertTest and DeleteTest system tests.
@@ -249,17 +245,15 @@ page it evicts.
 
 Fill in the `flushPage()` method and additional helper methods to implement page eviction in:
 
-***  
+---
 
-* src/java/simpledb/storage/BufferPool.java
+- src/java/simpledb/storage/BufferPool.java
 
-***
-
-
+---
 
 If you did not implement `writePage()` in
 <tt>HeapFile.java</tt> above, you will also need to do that here. Finally, you should also implement `discardPage()` to
-remove a page from the buffer pool *without* flushing it to disk. We will not test `discardPage()`
+remove a page from the buffer pool _without_ flushing it to disk. We will not test `discardPage()`
 in this lab, but it will be necessary for future labs.
 
 At this point, your code should pass the EvictionTest system test.
@@ -275,7 +269,7 @@ You have now completed this lab. Good work!
 
 ### 2.6. Query walkthrough
 
-The following code implements a simple join query between two tables, each consisting of three columns of integers.  (
+The following code implements a simple join query between two tables, each consisting of three columns of integers. (
 The file
 `some_data_file1.dat` and `some_data_file2.dat` are binary representation of the pages from this file). This code is
 equivalent to the SQL statement:
@@ -361,15 +355,15 @@ SeqScan) or child operator (in the case of e.g., Join). The test program then re
 operator, which in turn pulls tuples from its children. As tuples are output from the
 `Join`, they are printed out on the command line.
 
-## 3. Submission 
+## 3. Submission
 
 You must submit your code (see below) as well as a short (2 pages, maximum) report describing your approach. This
 writeup should:
 
-* Explain any design decisions you made. 
-* Explain the non-trivial part of your code. 
-* Discuss and justify any changes you made to the API.
-* Describe any missing or incomplete elements of your code.
+- Explain any design decisions you made.
+- Explain the non-trivial part of your code.
+- Discuss and justify any changes you made to the API.
+- Describe any missing or incomplete elements of your code.
 
 ### 3.1. Submitting your assignment
 
@@ -383,5 +377,4 @@ $ zip -r submission.zip src/ report.pdf
 ### 3.2. Grading
 
 We will compile and run your code again **our** system test suite. These tests will be a superset of the
-tests we have provided. Before handing in your code, you should make sure it produces no errors (passes all of
-the tests) from both  <tt>ant test</tt> and <tt>ant systemtest</tt>. 
+tests we have provided. Before handing in your code, you should make sure it produces no errors (passes all of the tests) by running <tt>ant runtest -Dtest=testname</tt> and <tt>ant runsystest -Dtest=testname</tt> on all of the tests whose name ('testname') appears in the text of this .md file and the .md file for the previous lab.

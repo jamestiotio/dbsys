@@ -3,7 +3,7 @@
 ### Due: Sunday, 28/11 11:59PM
 
 In this lab, you will implement a simple locking-based
-transaction system in SimpleDB.  You will need to add lock and
+transaction system in SimpleDB. You will need to add lock and
 unlock calls at the appropriate places in your code, as well as
 code to track the locks held by each transaction and grant
 locks to transactions as they are needed.
@@ -15,13 +15,13 @@ you might add this support to your database.
 As with the previous lab, we recommend that you start as early as possible.
 Locking and transactions can be quite tricky to debug!
 
-##  1. Getting started
+## 1. Getting started
 
 You should begin with the code you submitted for Lab 2 (if you did not
 submit code for Lab 2, or your solution didn't work properly, contact us to
-discuss options).  
+discuss options).
 
-##  2. Transactions, Locking, and Concurrency Control
+## 2. Transactions, Locking, and Concurrency Control
 
 Before starting,
 you should make sure you understand what a transaction is and how
@@ -31,57 +31,56 @@ atomicity of your transactions) works.
 In the remainder of this section, we briefly overview these concepts
 and discuss how they relate to SimpleDB.
 
-###  2.1. Transactions
+### 2.1. Transactions
 
 A transaction is a group of database actions (e.g., inserts, deletes,
-and reads) that are executed *atomically*; that is, either all of
+and reads) that are executed _atomically_; that is, either all of
 the actions complete or none of them do, and it is not apparent to an
 outside observer of the database that these actions were not completed
 as a part of a single, indivisible action.
 
-###  2.2. The ACID Properties
+### 2.2. The ACID Properties
 
 To help you understand
 how transaction management works in SimpleDB, we briefly review how
 it ensures that the ACID properties are satisfied:
 
-* **Atomicity**:  Strict two-phase locking and careful buffer management
+- **Atomicity**: Strict two-phase locking and careful buffer management
   ensure atomicity.</li>
-* **Consistency**:  The database is transaction consistent by virtue of
-  atomicity.  Other consistency issues (e.g., key constraints) are
+- **Consistency**: The database is transaction consistent by virtue of
+  atomicity. Other consistency issues (e.g., key constraints) are
   not addressed in SimpleDB.</li>
-* **Isolation**: Strict two-phase locking provides isolation.</li>
-* **Durability**: A FORCE buffer management policy ensures
+- **Isolation**: Strict two-phase locking provides isolation.</li>
+- **Durability**: A FORCE buffer management policy ensures
   durability (see Section 2.3 below).</li>
 
-
-###  2.3. Recovery and Buffer Management
+### 2.3. Recovery and Buffer Management
 
 To simplify your job, we recommend that you implement a NO STEAL/FORCE
 buffer management policy.
 
 As we discussed in class, this means that:
 
-*  You shouldn't evict dirty (updated) pages from the buffer pool if they
-   are locked by an uncommitted transaction (this is NO STEAL).
-*  On transaction commit, you should force dirty pages to disk (e.g.,
-   write the pages out) (this is FORCE).
-   
+- You shouldn't evict dirty (updated) pages from the buffer pool if they
+  are locked by an uncommitted transaction (this is NO STEAL).
+- On transaction commit, you should force dirty pages to disk (e.g.,
+  write the pages out) (this is FORCE).
+
 To further simplify your life, you may assume that SimpleDB will not crash
-while processing a `transactionComplete` command.  Note that
+while processing a `transactionComplete` command. Note that
 these three points mean that you do not need to implement log-based
 recovery in this lab, since you will never need to undo any work (you never evict
 dirty pages) and you will never need to redo any work (you force
 updates on commit and will not crash during commit processing).
 
-###  2.4. Granting Locks
+### 2.4. Granting Locks
 
 You will need to add calls to SimpleDB (in `BufferPool`,
 for example), that allow a caller to request or release a (shared or
 exclusive) lock on a specific object on behalf of a specific
 transaction.
 
-We recommend locking at *page* granularity; please do not
+We recommend locking at _page_ granularity; please do not
 implement table-level locking (even though it is possible) for simplicity of testing. The rest
 of this document and our unit tests assume page-level locking.
 
@@ -92,35 +91,35 @@ to a transaction when it is requested.
 You will need to implement shared and exclusive locks; recall that these
 work as follows:
 
-*  Before a transaction can read an object, it must have a shared lock on it.
-*  Before a transaction can write an object, it must have an exclusive lock on it.
-*  Multiple transactions can have a shared lock on an object.
-*  Only one transaction may have an exclusive lock on an object.
-*  If transaction *t* is the only transaction holding a shared lock on
-   an object *o*, *t* may *upgrade*
-   its lock on *o* to an exclusive lock.
+- Before a transaction can read an object, it must have a shared lock on it.
+- Before a transaction can write an object, it must have an exclusive lock on it.
+- Multiple transactions can have a shared lock on an object.
+- Only one transaction may have an exclusive lock on an object.
+- If transaction _t_ is the only transaction holding a shared lock on
+  an object _o_, _t_ may _upgrade_
+  its lock on _o_ to an exclusive lock.
 
 If a transaction requests a lock that cannot be immediately granted, your code
-should *block*, waiting for that lock to become available (i.e., be
+should _block_, waiting for that lock to become available (i.e., be
 released by another transaction running in a different thread).
 Be careful about race conditions in your lock implementation --- think about
-how concurrent invocations to your lock may affect the behavior. 
+how concurrent invocations to your lock may affect the behavior.
 (you way wish to read about <a href="http://docs.oracle.com/javase/tutorial/essential/concurrency/sync.html">
 Synchronization</a> in Java).
 
-***
+---
 
 **Exercise 1.**
 
 Write the methods that acquire and release locks in BufferPool. Assuming
 you are using page-level locking, you will need to complete the following:
 
-*  Modify <tt>getPage()</tt> to block and acquire the desired lock
-   before returning a page.
-*  Implement <tt>unsafeReleasePage()</tt>.  This method is primarily used
-   for testing, and at the end of transactions.
-*  Implement <tt>holdsLock()</tt> so that logic in Exercise 2 can
-   determine whether a page is already locked by a transaction.
+- Modify <tt>getPage()</tt> to block and acquire the desired lock
+  before returning a page.
+- Implement <tt>unsafeReleasePage()</tt>. This method is primarily used
+  for testing, and at the end of transactions.
+- Implement <tt>holdsLock()</tt> so that logic in Exercise 2 can
+  determine whether a page is already locked by a transaction.
 
 You may find it helpful to define a <tt>LockManager</tt> class that is responsible for
 maintaining state about transactions and locks, but the design decision is up to
@@ -129,12 +128,11 @@ you.
 You may need to implement the next exercise before your code passes
 the unit tests in LockingTest.
 
-***
+---
 
+### 2.5. Lock Lifetime
 
-###  2.5. Lock Lifetime
-
-You will need to implement strict two-phase locking.  This means that
+You will need to implement strict two-phase locking. This means that
 transactions should acquire the appropriate type of lock on any object
 before accessing that object and shouldn't release any locks until after
 the transaction commits.
@@ -146,8 +144,8 @@ we recommend acquiring locks in `getPage()`. Depending on your
 implementation, it is possible that you may not have to acquire a lock
 anywhere else. It is up to you to verify this!
 
-You will need to acquire a *shared* lock on any page (or tuple)
-before you read it, and you will need to acquire an *exclusive*
+You will need to acquire a _shared_ lock on any page (or tuple)
+before you read it, and you will need to acquire an _exclusive_
 lock on any page (or tuple) before you write it. You will notice that
 we are already passing around `Permissions` objects in the
 BufferPool; these objects indicate the type of lock that the caller
@@ -175,46 +173,45 @@ possible for there to be other scenarios in which releasing a lock before
 a transaction ends might be useful. For instance, you may release a shared lock
 on a page after scanning it to find empty slots (as described below).
 
-***
+---
 
 **Exercise 2.**
 
 Ensure that you acquire and release locks throughout SimpleDB. Some (but
 not necessarily all) actions that you should verify work properly:
 
-*  Reading tuples off of pages during a SeqScan (if you
-   implemented locking  in `BufferPool.getPage()`, this should work
-   correctly as long as your `HeapFile.iterator()` uses
-   `BufferPool.getPage()`.)
-*  Inserting and deleting tuples through BufferPool and HeapFile
-   methods (if you
-   implemented locking in `BufferPool.getPage()`, this should work
-   correctly as long as `HeapFile.insertTuple()` and
-   `HeapFile.deleteTuple()` use
-   `BufferPool.getPage()`.)
+- Reading tuples off of pages during a SeqScan (if you
+  implemented locking in `BufferPool.getPage()`, this should work
+  correctly as long as your `HeapFile.iterator()` uses
+  `BufferPool.getPage()`.)
+- Inserting and deleting tuples through BufferPool and HeapFile
+  methods (if you
+  implemented locking in `BufferPool.getPage()`, this should work
+  correctly as long as `HeapFile.insertTuple()` and
+  `HeapFile.deleteTuple()` use
+  `BufferPool.getPage()`.)
 
 You will also want to think especially hard about acquiring and releasing
 locks in the following situations:
 
-*  Adding a new page to a `HeapFile`.  When do you physically
-   write the page to disk?  Are there race conditions with other transactions
-   (on other threads) that might need special attention at the HeapFile level,
-   regardless of page-level locking?
-*  Looking for an empty slot into which you can insert tuples.
-   Most implementations scan pages looking for an empty
-   slot, and will need a READ_ONLY lock to do this.  Surprisingly, however,
-   if a transaction *t* finds no free slot on a page *p*, *t* may immediately release the lock on *p*.
-   Although this apparently contradicts the rules of two-phase locking, it is ok because
-   *t* did not use any data from the page, such that a concurrent transaction *t'* which updated
-   *p* cannot possibly effect the answer or outcome of *t*.
-
+- Adding a new page to a `HeapFile`. When do you physically
+  write the page to disk? Are there race conditions with other transactions
+  (on other threads) that might need special attention at the HeapFile level,
+  regardless of page-level locking?
+- Looking for an empty slot into which you can insert tuples.
+  Most implementations scan pages looking for an empty
+  slot, and will need a READ*ONLY lock to do this. Surprisingly, however,
+  if a transaction \_t* finds no free slot on a page _p_, _t_ may immediately release the lock on _p_.
+  Although this apparently contradicts the rules of two-phase locking, it is ok because
+  _t_ did not use any data from the page, such that a concurrent transaction _t'_ which updated
+  _p_ cannot possibly effect the answer or outcome of _t_.
 
 At this point, your code should pass the unit tests in
 LockingTest.
 
-***
+---
 
-###  2.6. Implementing NO STEAL
+### 2.6. Implementing NO STEAL
 
 Modifications from a transaction are written to disk only after it
 commits. This means we can abort a transaction by discarding the dirty
@@ -226,46 +223,44 @@ In particular, it must never evict a dirty page. If your eviction policy prefers
 for eviction, you will have to find a way to evict an alternative
 page. In the case where all pages in the buffer pool are dirty, you
 should throw a <tt>DbException</tt>. If your eviction policy evicts a clean page, be
-mindful of any locks transactions may already hold to the evicted page and handle them 
+mindful of any locks transactions may already hold to the evicted page and handle them
 appropriately in your implementation.
 
-***
+---
 
 **Exercise 3.**
 
 Implement the necessary logic for page eviction without evicting dirty pages
 in the <tt>evictPage</tt> method in <tt>BufferPool</tt>.
 
-***
+---
 
-
-###  2.7. Transactions
+### 2.7. Transactions
 
 In SimpleDB, a `TransactionId` object is created at the
-beginning of each query.  This object is passed to each of the operators
-involved in the query.  When the query is complete, the
+beginning of each query. This object is passed to each of the operators
+involved in the query. When the query is complete, the
 `BufferPool` method `transactionComplete` is called.
 
-Calling this method either *commits* or *aborts*  the
+Calling this method either _commits_ or _aborts_ the
 transaction, specified by the parameter flag `commit`. At any point
 during its execution, an operator may throw a
 `TransactionAbortedException` exception, which indicates an
-internal error or deadlock has occurred.  The test cases we have provided
+internal error or deadlock has occurred. The test cases we have provided
 you with create the appropriate `TransactionId` objects, pass
 them to your operators in the appropriate way, and invoke
-`transactionComplete` when a query is finished.  We have also
+`transactionComplete` when a query is finished. We have also
 implemented `TransactionId`.
 
-
-***
+---
 
 **Exercise 4.**
 
 Implement the `transactionComplete()` method in
 `BufferPool`. Note that there are two versions of
 transactionComplete, one which accepts an additional boolean **commit** argument,
-and one which does not.  The version without the additional argument should
-always commit and so can simply be implemented by calling  `transactionComplete(tid, true)`.
+and one which does not. The version without the additional argument should
+always commit and so can simply be implemented by calling `transactionComplete(tid, true)`.
 
 When you commit, you should flush dirty pages
 associated to the transaction to disk. When you abort, you should revert
@@ -277,10 +272,10 @@ Whether the transaction commits or aborts, you should also release any state the
 the transaction, including releasing any locks that the transaction held.
 
 At this point, your code should pass the `TransactionTest` unit test and the
-`AbortEvictionTest` system test.  You may find the `TransactionTest` system test
+`AbortEvictionTest` system test. You may find the `TransactionTest` system test
 illustrative, but it will likely fail until you complete the next exercise.
 
-###  2.8. Deadlocks and Aborts
+### 2.8. Deadlocks and Aborts
 
 It is possible for transactions in SimpleDB to deadlock (if you do not
 understand why, we recommend reading about deadlocks in Ramakrishnan & Gehrke).
@@ -291,23 +286,23 @@ There are many possible ways to detect deadlock. A strawman example would be to
 implement a simple timeout policy that aborts a transaction if it has not
 completed after a given period of time. For a real solution, you may implement
 cycle-detection in a dependency graph data structure as shown in lecture. In this
-scheme, you would  check for cycles in a dependency graph periodically or whenever
+scheme, you would check for cycles in a dependency graph periodically or whenever
 you attempt to grant a new lock, and abort something if a cycle exists. After you have detected
 that a deadlock exists, you must decide how to improve the situation. Assume you
-have detected a deadlock while  transaction *t* is waiting for a lock.  If you're
-feeling  homicidal, you might abort **all** transactions that *t* is
+have detected a deadlock while transaction _t_ is waiting for a lock. If you're
+feeling homicidal, you might abort **all** transactions that _t_ is
 waiting for; this may result in a large amount of work being undone, but
-you can guarantee that *t* will make progress.
-Alternately, you may decide to abort *t* to give other
+you can guarantee that _t_ will make progress.
+Alternately, you may decide to abort _t_ to give other
 transactions a chance to make progress. This means that the end-user will have
-to retry transaction *t*.
+to retry transaction _t_.
 
-Another approach is to use global orderings of transactions to avoid building the 
+Another approach is to use global orderings of transactions to avoid building the
 wait-for graph. This is sometimes preferred for performance reasons, but transactions
 that could have succeeded can be aborted by mistake under this scheme. Examples include
 the WAIT-DIE and WOUND-WAIT schemes.
 
-***
+---
 
 **Exercise 5.**
 
@@ -356,20 +351,19 @@ after the system restarts (or the transaction aborts.) You may wish to
 verify this by running some transactions and explicitly killing the
 database server.
 
+---
 
-***
-
-## 3. Submission 
+## 3. Submission
 
 You must submit your code (see below) as well as a short (2 pages, maximum) report describing your approach. This
 writeup should:
 
-* Explain any design decisions you made. For deadlock handling (detection and resolution), there are several
-alternatives. List the pros and cons of your approach. 
-* The lab assume locking at page level. How would your code/design change if you were to adopt tuple-level
-locking?
-* Discuss and justify any changes you made to the API.
-* Describe any missing or incomplete elements of your code.
+- Explain any design decisions you made. For deadlock handling (detection and resolution), there are several
+  alternatives. List the pros and cons of your approach.
+- The lab assume locking at page level. How would your code/design change if you were to adopt tuple-level
+  locking?
+- Discuss and justify any changes you made to the API.
+- Describe any missing or incomplete elements of your code.
 
 ### 3.1. Submitting your assignment
 
@@ -383,5 +377,4 @@ $ zip -r submission.zip src/ report.pdf
 ### 3.2 Grading
 
 We will compile and run your code again **our** system test suite. These tests will be a superset of the
-tests we have provided. Before handing in your code, you should make sure it produces no errors (passes all of
-the tests) from both  <tt>ant test</tt> and <tt>ant systemtest</tt>. 
+tests we have provided. Before handing in your code, you should make sure it produces no errors (passes all of the tests) by running <tt>ant runtest -Dtest=testname</tt> and <tt>ant runsystest -Dtest=testname</tt> on all of the tests whose name ('testname') appears in the text of this .md file and the .md files for the previous labs.
