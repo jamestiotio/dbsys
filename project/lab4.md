@@ -254,7 +254,7 @@ tuples and splits pages correctly, and also handles duplicate tuples.
 in `BTreeDeadlockTest.java` and `BTreeInsertTest.java`. Some of the test cases
 may take a few seconds to complete. `BTreeDeadlockTest` will test that you have
 implemented locking correctly and can handle deadlocks. `BTreeInsertTest` will
-test that your code inserts tuples and splits pages correcty, and also handles
+test that your code inserts tuples and splits pages correctly, and also handles
 duplicate tuples and next key locking. -->
 
 ---
@@ -344,20 +344,16 @@ successfully. Please note that this test may take up to a minute to complete.
 
 ## 6. Submission
 
-You must submit your code (see below) as well as a short (2 pages, maximum) report describing your approach. This
-writeup should:
+You must submit your code (see below) as well as a short (2 pages, maximum) report describing your approach. This writeup should:
 
-- Explain any design decisions you made. For deadlock handling (detection and resolution), there are several
-  alternatives. List the pros and cons of your approach.
-- The lab assume locking at page level. How would your code/design change if you were to adopt tuple-level
-  locking?
+- Explain any design decisions you made. For deadlock handling (detection and resolution), there are several alternatives. List the pros and cons of your approach.
+- The lab assume locking at page level. How would your code/design change if you were to adopt tuple-level locking?
 - Discuss and justify any changes you made to the API.
 - Describe any missing or incomplete elements of your code.
 
 ### 6.1. Submitting your assignment
 
-Submit a Zip file contain the `src` directory, and your report. On Linux/MacOS, you can
-do so by running the following command:
+Submit a Zip file contain the `src` directory, and your report. On Linux/MacOS, you can do so by running the following command:
 
 ```bash
 $ zip -r submission.zip src/ report.pdf
@@ -365,5 +361,47 @@ $ zip -r submission.zip src/ report.pdf
 
 ### 6.2. Grading
 
-We will compile and run your code again **our** system test suite. These tests will be a superset of the
-tests we have provided. Before handing in your code, you should make sure it produces no errors (passes all of the tests) by running <tt>ant runtest -Dtest=testname</tt> and <tt>ant runsystest -Dtest=testname</tt> on all of the tests whose name ('testname') appears in the text of this .md file and the .md files for the previous labs.
+We will compile and run your code again **our** system test suite. These tests will be a superset of the tests we have provided. Before handing in your code, you should make sure it produces no errors (passes all of the tests) by running <tt>ant runtest -Dtest=testname</tt> and <tt>ant runsystest -Dtest=testname</tt> on all of the tests whose name ('testname') appears in the text of this .md file and the .md files for the previous labs.
+
+The list of relevant tests include:
+
+- Unit tests:
+  - `TupleDescTest`
+  - `TupleTest`
+  - `CatalogTest`
+  - `HeapPageIdTest`
+  - `RecordIdTest`
+  - `HeapPageReadTest`
+  - `HeapFileReadTest`
+  - `PredicateTest`
+  - `JoinPredicateTest`
+  - `FilterTest`
+  - `JoinTest`
+  - `IntegerAggregatorTest`
+  - `StringAggregatorTest`
+  - `AggregateTest`
+  - `HeapPageWriteTest`
+  - `HeapFileWriteTest`
+  - `BufferPoolWriteTest`
+  - `InsertTest`
+  - `LockingTest`
+  - `TransactionTest`
+  - `BTreeFileReadTest`
+  - `BTreeFileInsertTest`
+  - `BTreeFileDeleteTest`
+  - `BTreeNextKeyLockingTest`
+  - `BTreeDeadlockTest`
+- System tests:
+  - `ScanTest`
+  - `FilterTest`
+  - `JoinTest`
+  - `AggregateTest`
+  - `InsertTest`
+  - `DeleteTest`
+  - `EvictionTest`
+  - `AbortEvictionTest`
+  - `TransactionTest`
+  - `BTreeScanTest`
+  - `BTreeFileInsertTest`
+  - `BTreeFileDeleteTest`
+  - `BTreeTest`

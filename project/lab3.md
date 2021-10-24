@@ -23,9 +23,8 @@ discuss options).
 
 ## 2. Transactions, Locking, and Concurrency Control
 
-Before starting,
-you should make sure you understand what a transaction is and how
-strict two-phase locking (which you will use to ensure isolation and
+Before starting, you should make sure you understand what a transaction is
+and how strict two-phase locking (which you will use to ensure isolation and
 atomicity of your transactions) works.
 
 In the remainder of this section, we briefly overview these concepts
@@ -41,9 +40,8 @@ as a part of a single, indivisible action.
 
 ### 2.2. The ACID Properties
 
-To help you understand
-how transaction management works in SimpleDB, we briefly review how
-it ensures that the ACID properties are satisfied:
+To help you understand how transaction management works in SimpleDB,
+we briefly review how it ensures that the ACID properties are satisfied:
 
 - **Atomicity**: Strict two-phase locking and careful buffer management
   ensure atomicity.</li>
@@ -81,8 +79,8 @@ exclusive) lock on a specific object on behalf of a specific
 transaction.
 
 We recommend locking at _page_ granularity; please do not
-implement table-level locking (even though it is possible) for simplicity of testing. The rest
-of this document and our unit tests assume page-level locking.
+implement table-level locking (even though it is possible) for simplicity of testing.
+The rest of this document and our unit tests assume page-level locking.
 
 You will need to create data structures that keep track of which locks
 each transaction holds and check to see if a lock should be granted
@@ -104,8 +102,7 @@ should _block_, waiting for that lock to become available (i.e., be
 released by another transaction running in a different thread).
 Be careful about race conditions in your lock implementation --- think about
 how concurrent invocations to your lock may affect the behavior.
-(you way wish to read about <a href="http://docs.oracle.com/javase/tutorial/essential/concurrency/sync.html">
-Synchronization</a> in Java).
+(you way wish to read about <a href="http://docs.oracle.com/javase/tutorial/essential/concurrency/sync.html">Synchronization</a> in Java).
 
 ---
 
@@ -168,8 +165,7 @@ implemented this code in lab 2, but we did not test for this case.)
 After you have acquired locks, you will need to think about when to
 release them as well. It is clear that you should release all locks
 associated with a transaction after it has committed or aborted to ensure strict 2PL.
-However, it is
-possible for there to be other scenarios in which releasing a lock before
+However, it is possible for there to be other scenarios in which releasing a lock before
 a transaction ends might be useful. For instance, you may release a shared lock
 on a page after scanning it to find empty slots (as described below).
 
@@ -355,13 +351,10 @@ database server.
 
 ## 3. Submission
 
-You must submit your code (see below) as well as a short (2 pages, maximum) report describing your approach. This
-writeup should:
+You must submit your code (see below) as well as a short (2 pages, maximum) report describing your approach. This writeup should:
 
-- Explain any design decisions you made. For deadlock handling (detection and resolution), there are several
-  alternatives. List the pros and cons of your approach.
-- The lab assume locking at page level. How would your code/design change if you were to adopt tuple-level
-  locking?
+- Explain any design decisions you made. For deadlock handling (detection and resolution), there are several alternatives. List the pros and cons of your approach.
+- The lab assume locking at page level. How would your code/design change if you were to adopt tuple-level locking?
 - Discuss and justify any changes you made to the API.
 - Describe any missing or incomplete elements of your code.
 
@@ -376,5 +369,38 @@ $ zip -r submission.zip src/ report.pdf
 
 ### 3.2 Grading
 
-We will compile and run your code again **our** system test suite. These tests will be a superset of the
-tests we have provided. Before handing in your code, you should make sure it produces no errors (passes all of the tests) by running <tt>ant runtest -Dtest=testname</tt> and <tt>ant runsystest -Dtest=testname</tt> on all of the tests whose name ('testname') appears in the text of this .md file and the .md files for the previous labs.
+We will compile and run your code again **our** system test suite. These tests will be a superset of the tests we have provided. Before handing in your code, you should make sure it produces no errors (passes all of the tests) by running <tt>ant runtest -Dtest=testname</tt> and <tt>ant runsystest -Dtest=testname</tt> on all of the tests whose name ('testname') appears in the text of this .md file and the .md files for the previous labs.
+
+The list of relevant tests include:
+
+- Unit tests:
+  - `TupleDescTest`
+  - `TupleTest`
+  - `CatalogTest`
+  - `HeapPageIdTest`
+  - `RecordIdTest`
+  - `HeapPageReadTest`
+  - `HeapFileReadTest`
+  - `PredicateTest`
+  - `JoinPredicateTest`
+  - `FilterTest`
+  - `JoinTest`
+  - `IntegerAggregatorTest`
+  - `StringAggregatorTest`
+  - `AggregateTest`
+  - `HeapPageWriteTest`
+  - `HeapFileWriteTest`
+  - `BufferPoolWriteTest`
+  - `InsertTest`
+  - `LockingTest`
+  - `TransactionTest`
+- System tests:
+  - `ScanTest`
+  - `FilterTest`
+  - `JoinTest`
+  - `AggregateTest`
+  - `InsertTest`
+  - `DeleteTest`
+  - `EvictionTest`
+  - `AbortEvictionTest`
+  - `TransactionTest`

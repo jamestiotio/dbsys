@@ -469,8 +469,8 @@ org.junit.Assert
 simpledb.storage.HeapPage
 ||:simpledb.common.Catalog
 java.lang.IndexOutOfBoundsException
+java.lang.invoke.LambdaMetafactory
 java.lang.System
-java.util.HashMap
 simpledb.storage.TupleDesc
 java.lang.Integer
 java.util.ArrayList
@@ -480,11 +480,13 @@ java.lang.String
 java.util.NoSuchElementException
 simpledb.common.Table
 java.io.PrintStream
+java.util.Map$Entry
 java.lang.invoke.MethodHandles$Lookup
 java.util.Iterator
 simpledb.common.Type
 java.util.Collection
 java.lang.invoke.MethodHandles
+java.util.concurrent.ConcurrentHashMap
 java.util.Set
 java.io.IOException
 java.util.UUID

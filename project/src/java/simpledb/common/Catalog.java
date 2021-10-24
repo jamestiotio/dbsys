@@ -32,7 +32,7 @@ public class Catalog {
      * Creates a new, empty catalog.
      */
     public Catalog() {
-        this.catalogMap = new HashMap<>();
+        this.catalogMap = new ConcurrentHashMap<>();
     }
 
     /**
@@ -53,6 +53,9 @@ public class Catalog {
             if (this.catalogMap.containsKey(tableId)) {
                 this.catalogMap.remove(tableId);
             }
+
+            // Handle duplicate table names
+            this.catalogMap.entrySet().removeIf(entry -> entry.getValue().getName() == name);
 
             Table t = new Table(file, name, pkeyField);
             this.catalogMap.put(tableId, t);
