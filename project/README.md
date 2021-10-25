@@ -31,4 +31,4 @@ Future work might include implementing query optimization, as well as rollback a
 
 ## Acknowledgement
 
-The labs are modified from the MIT 6.830 course. We thank the MIT staff for the materials.
+The labs are modified from the [MIT 6.830 course](http://dsg.csail.mit.edu/6.830/). We thank the MIT staff for the materials.
