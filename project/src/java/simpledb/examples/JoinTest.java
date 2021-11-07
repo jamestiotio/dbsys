@@ -1,4 +1,4 @@
-package simpledb;
+package simpledb.examples;
 
 import java.io.*;
 import simpledb.common.Database;

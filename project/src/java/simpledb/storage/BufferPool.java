@@ -86,16 +86,19 @@ public class BufferPool {
      */
     public Page getPage(TransactionId tid, PageId pid, Permissions perm)
         throws TransactionAbortedException, DbException {
-        if (this.numPages <= this.pagePool.size()) {
-            this.evictPage();
-        }
-
         // Check if the requested page is in the pagePool
         if (this.pagePool.containsKey(pid)) {
-            return this.pagePool.get(pid);
+            Page page = this.pagePool.get(pid);
+            this.pagePool.remove(pid);
+            this.pagePool.put(pid, page);
+            return page;
         }
 
         Page newPage = Database.getCatalog().getDatabaseFile(pid.getTableId()).readPage(pid);
+
+        if (this.numPages <= this.pagePool.size()) {
+            this.evictPage();
+        }
 
         this.pagePool.put(pid, newPage);
         return newPage;
@@ -161,12 +164,13 @@ public class BufferPool {
     public void insertTuple(TransactionId tid, int tableId, Tuple t)
         throws DbException, IOException, TransactionAbortedException {
         HeapFile file = (HeapFile) Database.getCatalog().getDatabaseFile(tableId);
-        ArrayList<Page> pageArr = (ArrayList<Page>) file.insertTuple(tid, t);
-        for (Page pg : pageArr) {
+        ArrayList<Page> pageArray = (ArrayList<Page>) file.insertTuple(tid, t);
+        for (Page pg : pageArray) {
             pg.markDirty(true, tid);
-            if (this.pagePool.size() > this.numPages) {
+            if (!this.pagePool.containsKey(pg.getId()) && this.pagePool.size() >= this.numPages) {
                 this.evictPage();
             }
+            this.pagePool.remove(pg.getId());
             // Assign id to the page
             this.pagePool.put(pg.getId(), pg);
         }
@@ -192,11 +196,14 @@ public class BufferPool {
         }
         int tableId = t.getRecordId().getPageId().getTableId();
         DbFile file = Database.getCatalog().getDatabaseFile(tableId);
-
         ArrayList<Page> pageArray = (ArrayList<Page>) file.deleteTuple(tid, t);
 
-        for (Page pg: pageArray) {
+        for (Page pg : pageArray) {
             pg.markDirty(true, tid);
+            if (!this.pagePool.containsKey(pg.getId()) && this.pagePool.size() >= this.numPages) {
+                this.evictPage();
+            }
+            this.pagePool.remove(pg.getId());
             // Assign id to the page
             this.pagePool.put(pg.getId(), pg);
         }
@@ -256,9 +263,7 @@ public class BufferPool {
      * Flushes the page to disk to ensure dirty pages are updated on disk.
      */
     private synchronized void evictPage() throws DbException {
-        ArrayList<PageId> arrayList = new ArrayList<>(this.pagePool.keySet());
-        int randomPage = (int) (Math.random() * this.pagePool.size());
-        PageId pid = arrayList.get(randomPage);
+        PageId pid = this.pagePool.keySet().iterator().next();
 
         try {
             this.flushPage(pid);

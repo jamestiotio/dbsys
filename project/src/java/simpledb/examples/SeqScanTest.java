@@ -1,4 +1,5 @@
-package simpledb;
+package simpledb.examples;
+
 import java.io.*;
 import simpledb.common.Database;
 import simpledb.common.Type;
@@ -8,7 +9,7 @@ import simpledb.storage.Tuple;
 import simpledb.storage.TupleDesc;
 import simpledb.transaction.TransactionId;
 
-public class Test {
+public class SeqScanTest {
     public static void main(String[] argv) {
         // construct a 3-column table schema
         Type types[] = new Type[]{ Type.INT_TYPE, Type.INT_TYPE, Type.INT_TYPE };

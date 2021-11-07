@@ -24,7 +24,7 @@ public class HeapPage implements Page {
     private final byte[] header;
     private final Tuple[] tuples;
     private final int numSlots;
-    private TransactionId dirtierTid;
+    private TransactionId dirtyTid;
     private long lastAccessTimestamp;
 
     private byte[] oldData;
@@ -50,7 +50,7 @@ public class HeapPage implements Page {
         this.pid = id;
         this.td = Database.getCatalog().getTupleDesc(id.getTableId());
         this.numSlots = getNumTuples();
-        this.dirtierTid = null;
+        this.dirtyTid = null;
         this.updateLastAccessTimestamp();
         DataInputStream dis = new DataInputStream(new ByteArrayInputStream(data));
 
@@ -288,9 +288,9 @@ public class HeapPage implements Page {
      */
     public void markDirty(boolean dirty, TransactionId tid) {
         if (dirty) {
-            this.dirtierTid = tid;
+            this.dirtyTid = tid;
         } else {
-            this.dirtierTid = null;
+            this.dirtyTid = null;
         }
     }
 
@@ -298,7 +298,7 @@ public class HeapPage implements Page {
      * Returns the tid of the transaction that last dirtied this page, or null if the page is not dirty
      */
     public TransactionId isDirty() {
-        return this.dirtierTid;
+        return this.dirtyTid;
     }
 
     /**
@@ -349,12 +349,17 @@ public class HeapPage implements Page {
     }
 
     /**
-     * Set the page timestamp to the current time
+     * Set the last page access timestamp to the current time.
+     * Used for the LRU Buffer Pool replacement policy.
      */
     public void updateLastAccessTimestamp() {
         this.lastAccessTimestamp = Instant.now().toEpochMilli();
     }
 
+    /**
+     * Get the last access timestamp of the current page.
+     * Used for the LRU Buffer Pool replacement policy.
+     */
     public long getLastAccessTimestamp() {
         return this.lastAccessTimestamp;
     }
