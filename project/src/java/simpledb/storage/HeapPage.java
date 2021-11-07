@@ -78,7 +78,7 @@ public class HeapPage implements Page {
     private int getNumTuples() {
         int tupleSize = this.td.getSize();    
         int bufferPoolPageSize = Database.getBufferPool().getPageSize();
-        return (int) Math.floor((bufferPoolPageSize * 8.0) / (tupleSize * 8.0 + 1.0));
+        return (int) Math.floor((bufferPoolPageSize * 8) / (tupleSize * 8 + 1));
     }
 
     /**
@@ -86,7 +86,7 @@ public class HeapPage implements Page {
      * @return the number of bytes in the header of a page in a HeapFile with each tuple occupying tupleSize bytes
      */
     private int getHeaderSize() {
-        return (int) Math.ceil(this.numSlots / 8.0);
+        return (int) Math.ceil(this.getNumTuples() / 8.0);
     }
     
     /** Return a view of this page before it was modified
@@ -318,17 +318,19 @@ public class HeapPage implements Page {
      * Returns true if associated slot on this page is filled.
      */
     public boolean isSlotUsed(int i) {
-        return ((this.header[i / 8] & 0xFF) & (1 << (i % 8))) != 0;
+        return ((header[i / 8] >> (i % 8)) & 1) == 1;
     }
 
     /**
      * Abstraction to fill or clear a slot on this page.
      */
     private void markSlotUsed(int i, boolean value) {
-        if (value) {
-            this.header[i / 8] |= (1 << (i % 8));
-        } else {
-            this.header[i / 8] &= ~(1 << (i % 8));
+        if (isSlotUsed(i) != value) {
+            if (value) {
+                header[i / 8] |= (1 << (i % 8));
+            } else {
+                header[i / 8] ^= (1 << (i % 8));
+            }
         }
     }
 
@@ -338,7 +340,7 @@ public class HeapPage implements Page {
      */
     public Iterator<Tuple> iterator() {
         ArrayList<Tuple> tuplesInUse = new ArrayList<>();
-        for (int i = 0; i < this.tuples.length; i++) {
+        for (int i = 0; i < this.getNumTuples(); i++) {
             if (this.isSlotUsed(i)) {
                 tuplesInUse.add(this.tuples[i]);
             }

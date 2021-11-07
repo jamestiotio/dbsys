@@ -47,13 +47,13 @@ public class Delete extends Operator {
     public void open() throws DbException, TransactionAbortedException {
         this.child.open();
         super.open();
-        this.fetched = false;
     }
 
     @Override
     public void close() {
         super.close();
         this.child.close();
+        this.fetched = false;
     }
 
     public void rewind() throws DbException, TransactionAbortedException {

@@ -42,7 +42,6 @@ public class DeleteTest extends FilterBase {
         assertTrue(hasResult);
 
         deleteOperator.close();
-
         // As part of the same transaction, scan the table
         if (result == 0) {
             // Deleted zero tuples: all tuples still in table
