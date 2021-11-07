@@ -62,9 +62,10 @@ public class HeapFileIterator extends AbstractDbFileIterator {
             return this.tupleIterator.next();
         } else if (this.nextPageNo < this.heapFile.numPages()) {
             this.tupleIterator = this.getNextPageIterator();
-            if (this.tupleIterator.hasNext()) {
-                return this.tupleIterator.next();
+            while (!this.tupleIterator.hasNext()) {
+                this.tupleIterator = this.getNextPageIterator();
             }
+            return this.tupleIterator.next();
         }
 
         return null;

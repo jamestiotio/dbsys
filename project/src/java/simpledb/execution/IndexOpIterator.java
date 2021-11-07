@@ -4,7 +4,7 @@ import simpledb.common.DbException;
 
 import java.util.*;
 
-/** IndexDBIterator is the interface that index access methods
+/** IndexOpIterator is the interface that index access methods
     implement in SimpleDb.
 */
 public interface IndexOpIterator extends OpIterator {

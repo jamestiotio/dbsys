@@ -146,17 +146,19 @@ In addition to the methods that you need to fill out for this lab, the class int
 
 ```java
 // Not necessary for lab1.
-public class Insert implements DbIterator {
+public class Insert extends Operator {
+    // some code goes here
+}
 ```
 
 or per method:
 
 ```Java
-public boolean deleteTuple(Tuple t)throws DbException{
-        // some code goes here
-        // not necessary for lab1
-        return false;
-        }
+public boolean deleteTuple(Tuple t) throws DbException {
+    // some code goes here
+    // not necessary for lab1
+    return false;
+}
 ```
 
 The code that you submit should compile without having to modify these methods.
@@ -362,7 +364,7 @@ At this point, your code should pass the unit tests in HeapFileReadTest.
 
 ### 2.6. Operators
 
-Operators are responsible for the actual execution of the query plan. They implement the operations of the relational algebra. In SimpleDB, operators are iterator based; each operator implements the `DbIterator` interface.
+Operators are responsible for the actual execution of the query plan. They implement the operations of the relational algebra. In SimpleDB, operators are iterator based; each operator implements the `OpIterator` interface.
 
 <p>
 

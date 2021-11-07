@@ -959,7 +959,7 @@ public class BTreeFile implements DbFile {
 
 		// if this is the last page in the file (and not the only page), just 
 		// truncate the file
-		// @TODO: Commented out because we should probably do this somewhere else in case the transaction aborts....
+		// TODO: Commented out because we should probably do this somewhere else in case the transaction aborts...
 //		synchronized(this) {
 //			if(emptyPageNo == numPages()) {
 //				if(emptyPageNo <= 1) {

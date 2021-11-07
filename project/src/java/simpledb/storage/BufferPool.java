@@ -11,7 +11,9 @@ import simpledb.transaction.TransactionId;
 import java.io.*;
 
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * BufferPool manages the reading and writing of pages into memory from
@@ -40,6 +42,8 @@ public class BufferPool {
 
     // Map to store buffer pages
     private ConcurrentHashMap<PageId, Page> pagePool;
+
+    private ConcurrentHashMap<TransactionId, Set<PageId>> transactionPageMap = new ConcurrentHashMap<>();
 
     /**
      * Creates a BufferPool that caches up to numPages pages.
@@ -82,13 +86,13 @@ public class BufferPool {
      */
     public Page getPage(TransactionId tid, PageId pid, Permissions perm)
         throws TransactionAbortedException, DbException {
+        if (this.numPages <= this.pagePool.size()) {
+            this.evictPage();
+        }
+
         // Check if the requested page is in the pagePool
         if (this.pagePool.containsKey(pid)) {
             return this.pagePool.get(pid);
-        }
-
-        if (this.numPages <= this.pagePool.size()) {
-            this.evictPage();
         }
 
         Page newPage = Database.getCatalog().getDatabaseFile(pid.getTableId()).readPage(pid);
@@ -106,7 +110,7 @@ public class BufferPool {
      * @param tid the ID of the transaction requesting the unlock
      * @param pid the ID of the page to unlock
      */
-    public  void unsafeReleasePage(TransactionId tid, PageId pid) {
+    public void unsafeReleasePage(TransactionId tid, PageId pid) {
         // some code goes here
         // not necessary for lab1|lab2
     }
@@ -117,8 +121,7 @@ public class BufferPool {
      * @param tid the ID of the transaction requesting the unlock
      */
     public void transactionComplete(TransactionId tid) {
-        // some code goes here
-        // not necessary for lab1|lab2
+        this.transactionComplete(tid, true);
     }
 
     /** Return true if the specified transaction has a lock on the specified page */
@@ -157,8 +160,16 @@ public class BufferPool {
      */
     public void insertTuple(TransactionId tid, int tableId, Tuple t)
         throws DbException, IOException, TransactionAbortedException {
-        // some code goes here
-        // not necessary for lab1
+        HeapFile file = (HeapFile) Database.getCatalog().getDatabaseFile(tableId);
+        ArrayList<Page> pageArr = (ArrayList<Page>) file.insertTuple(tid, t);
+        for (Page pg : pageArr) {
+            pg.markDirty(true, tid);
+            if (this.pagePool.size() > this.numPages) {
+                this.evictPage();
+            }
+            // Assign id to the page
+            this.pagePool.put(pg.getId(), pg);
+        }
     }
 
     /**
@@ -174,10 +185,21 @@ public class BufferPool {
      * @param tid the transaction deleting the tuple.
      * @param t the tuple to delete
      */
-    public  void deleteTuple(TransactionId tid, Tuple t)
+    public void deleteTuple(TransactionId tid, Tuple t)
         throws DbException, IOException, TransactionAbortedException {
-        // some code goes here
-        // not necessary for lab1
+        if (t.getRecordId() == null) {
+            System.out.printf("NULL: %s%n", t.toString());
+        }
+        int tableId = t.getRecordId().getPageId().getTableId();
+        DbFile file = Database.getCatalog().getDatabaseFile(tableId);
+
+        ArrayList<Page> pageArray = (ArrayList<Page>) file.deleteTuple(tid, t);
+
+        for (Page pg: pageArray) {
+            pg.markDirty(true, tid);
+            // Assign id to the page
+            this.pagePool.put(pg.getId(), pg);
+        }
     }
 
     /**
@@ -186,9 +208,9 @@ public class BufferPool {
      *     break simpledb if running in NO STEAL mode.
      */
     public synchronized void flushAllPages() throws IOException {
-        // some code goes here
-        // not necessary for lab1
-
+        for (PageId pid: this.pagePool.keySet()) {
+            this.flushPage(pid);
+        }
     }
 
     /** Remove the specific page id from the buffer pool.
@@ -200,8 +222,7 @@ public class BufferPool {
         are removed from the cache so they can be reused safely
     */
     public synchronized void discardPage(PageId pid) {
-        // some code goes here
-        // not necessary for lab1
+        this.pagePool.remove(pid);
     }
 
     /**
@@ -209,8 +230,18 @@ public class BufferPool {
      * @param pid an ID indicating the page to flush
      */
     private synchronized void flushPage(PageId pid) throws IOException {
-        // some code goes here
-        // not necessary for lab1
+        Page pg = this.pagePool.get(pid);
+
+        if (this.pagePool.containsKey(pid)) {
+            TransactionId dirty = pg.isDirty();
+            if (dirty != null) {
+                Database.getLogFile().logWrite(dirty, pg.getBeforeImage(), pg);
+                Database.getLogFile().force();
+                HeapFile hpFile = (HeapFile) Database.getCatalog().getDatabaseFile(pid.getTableId());
+                hpFile.writePage(pg);
+                pg.markDirty(false, null);
+            }
+        }
     }
 
     /** Write all pages of the specified transaction to disk.
@@ -225,8 +256,15 @@ public class BufferPool {
      * Flushes the page to disk to ensure dirty pages are updated on disk.
      */
     private synchronized void evictPage() throws DbException {
-        // some code goes here
-        // not necessary for lab1
-        throw new DbException("Buffer pool is full. Eviction method unimplemented for Lab 1.");
+        ArrayList<PageId> arrayList = new ArrayList<>(this.pagePool.keySet());
+        int randomPage = (int) (Math.random() * this.pagePool.size());
+        PageId pid = arrayList.get(randomPage);
+
+        try {
+            this.flushPage(pid);
+        } catch (IOException e) {
+            throw new DbException("Page could not be flushed.");
+        }
+        this.pagePool.remove(pid);
     }
 }

@@ -67,7 +67,7 @@ public class FilterTest extends SimpleDbTestBase {
     Filter op = new Filter(pred, scan);
     TestUtil.MockScan expectedOut = new TestUtil.MockScan(-5, 2, testWidth);
     op.open();
-    TestUtil.compareDbIterators(op, expectedOut);
+    TestUtil.compareOpIterators(op, expectedOut);
     op.close();
   }
 

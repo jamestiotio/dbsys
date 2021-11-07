@@ -104,11 +104,11 @@ public class TestUtil {
     }
 
     /**
-     * Check to see if the DbIterators have the same number of tuples and
+     * Check to see if the OpIterators have the same number of tuples and
      *   each tuple pair in parallel iteration satisfies compareTuples .
      * If not, throw an assertion.
      */
-    public static void compareDbIterators(OpIterator expected, OpIterator actual)
+    public static void compareOpIterators(OpIterator expected, OpIterator actual)
             throws DbException, TransactionAbortedException {
         while (expected.hasNext()) {
             assertTrue(actual.hasNext());

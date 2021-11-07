@@ -1,14 +1,26 @@
 package simpledb.execution;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import simpledb.common.Type;
+import simpledb.storage.Field;
+import simpledb.storage.IntField;
 import simpledb.storage.Tuple;
+import simpledb.storage.TupleDesc;
+import simpledb.storage.TupleIterator;
 
 /**
  * Knows how to compute some aggregate over a set of StringFields.
  */
 public class StringAggregator implements Aggregator {
-
     private static final long serialVersionUID = 1L;
+
+    private int gbField;
+    private Type gbFieldType;
+    private int aggField;
+    private Op aggOp;
+    private HashMap<Field, Integer> groupCounts;
 
     /**
      * Aggregate constructor
@@ -20,7 +32,13 @@ public class StringAggregator implements Aggregator {
      */
 
     public StringAggregator(int gbfield, Type gbfieldtype, int afield, Op what) {
-        // some code goes here
+        if (what != Op.COUNT) throw new IllegalArgumentException();
+
+        this.gbField = gbfield;
+        this.gbFieldType = gbfieldtype;
+        this.aggField = afield;
+        this.aggOp = what;
+        this.groupCounts = new HashMap<>();
     }
 
     /**
@@ -28,7 +46,9 @@ public class StringAggregator implements Aggregator {
      * @param tup the Tuple containing an aggregate field and a group-by field
      */
     public void mergeTupleIntoGroup(Tuple tup) {
-        // some code goes here
+        Field groupByField = this.getGroupByField(tup);
+        int updatedCount = this.getUpdatedCount(tup);
+        this.groupCounts.put(groupByField, updatedCount);
     }
 
     /**
@@ -40,8 +60,55 @@ public class StringAggregator implements Aggregator {
      *   aggregate specified in the constructor.
      */
     public OpIterator iterator() {
-        // some code goes here
-        throw new UnsupportedOperationException("please implement me for lab2");
+        TupleDesc groupAggregateTd;
+        ArrayList<Tuple> tuples = new ArrayList<>();
+        boolean hasGrouping = (this.gbField != Aggregator.NO_GROUPING);
+
+        if (hasGrouping) {
+            groupAggregateTd = new TupleDesc(new Type[]{this.gbFieldType, Type.INT_TYPE});
+        } else {
+            groupAggregateTd = new TupleDesc(new Type[]{Type.INT_TYPE});
+        }
+
+        for (Map.Entry<Field, Integer> groupAggregateEntry: this.groupCounts.entrySet()) {
+            Tuple groupCountsTuple = new Tuple(groupAggregateTd);
+
+            // If there is a grouping, we return a tuple in the form {groupByField, aggregateVal}
+            // If there is no grouping, we return a tuple in the form {aggregateVal}
+            if (hasGrouping) {
+                groupCountsTuple.setField(0, groupAggregateEntry.getKey());
+                groupCountsTuple.setField(1, new IntField(groupAggregateEntry.getValue()));
+            } else {
+                groupCountsTuple.setField(0, new IntField(groupAggregateEntry.getValue()));
+            }
+            tuples.add(groupCountsTuple);
+        }
+        return new TupleIterator(groupAggregateTd, tuples);
     }
 
+    /**
+     * Returns the updated count aggregate (+1 for each tuple we've seen in a particular group)
+     * @param tup The tuple used to update the current count
+     * @return the updated count
+     */
+    private int getUpdatedCount(Tuple tup) {
+        Field groupByField = getGroupByField(tup);
+        int currentCount = this.groupCounts.getOrDefault(groupByField, 0);
+        return ++currentCount;
+    }
+
+    /**
+     * Returns the groupby Field of the current tuple, or null if there is no grouping
+     * @param tup The tuple whose groupby Field we wish to return
+     * @return the Field used in the group by clause, or null if there is no grouping
+     */
+    private Field getGroupByField(Tuple tup) {
+        Field groupByField;
+        if (this.gbField == Aggregator.NO_GROUPING) {
+            groupByField = null;
+        } else {
+            groupByField = tup.getField(this.gbField);
+        }
+        return groupByField;
+    }
 }

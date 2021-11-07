@@ -56,6 +56,13 @@ public class Tuple implements Serializable {
     }
 
     /**
+     * @return the number of fields in this Tuple
+     */
+    public int getNumFields() {
+        return this.tupleFields.length;
+    }
+
+    /**
      * Change the value of the ith field of this tuple.
      *
      * @param i
@@ -99,19 +106,18 @@ public class Tuple implements Serializable {
      */
     @Override
     public String toString() {
-        String description = "";
+        StringBuilder description = new StringBuilder();
 
-        for (int i = 0; i < this.tupleFields.length; i++) {
+        for (int i = 0; i < this.getNumFields(); i++) {
             if (this.tupleFields[i] == null) {
-                description += "null\t";
+                description.append("null\t");
             } else {
-                description += this.tupleFields[i].toString() + "\t";
+                description.append(this.tupleFields[i].toString() + "\t");
             }
         }
 
         // Chop off the final whitespace character
-        description = description.substring(0, description.length() - 1);
-        return description;
+        return description.substring(0, description.length() - 1);
     }
 
     /**

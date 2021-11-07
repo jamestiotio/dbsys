@@ -10,10 +10,9 @@ import java.util.NoSuchElementException;
 /**
  * Abstract class for implementing operators. It handles <code>close</code>,
  * <code>next</code> and <code>hasNext</code>. Subclasses only need to implement
- * <code>open</code> and <code>readNext</code>.
+ * <code>open</code> and <code>fetchNext</code>.
  */
 public abstract class Operator implements OpIterator {
-
     private static final long serialVersionUID = 1L;
 
     public boolean hasNext() throws DbException, TransactionAbortedException {
@@ -68,7 +67,7 @@ public abstract class Operator implements OpIterator {
     }
 
     /**
-     * @return return the children DbIterators of this operator. If there is
+     * @return return the children OpIterators of this operator. If there is
      *         only one child, return an array of only one element. For join
      *         operators, the order of the children is not important. But they
      *         should be consistent among multiple calls.
@@ -82,7 +81,7 @@ public abstract class Operator implements OpIterator {
      * 
      * 
      * @param children
-     *            the DbIterators which are to be set as the children(child) of
+     *            the OpIterators which are to be set as the children(child) of
      *            this operator
      * */
     public abstract void setChildren(OpIterator[] children);
