@@ -1,4 +1,4 @@
-# SUTD ISTD/CSD 2021 50.043 Database Systems Lab 5 Exercises
+# SUTD ISTD/CSD 2021 50.043 Database and Big Data Systems Lab 5 Exercises
 
 > James Raphael Tiovalen / 1004555
 

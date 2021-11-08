@@ -1,10 +1,11 @@
-# SUTD ISTD/CSD 2021 50.043 Database Systems Lab 2 Exercises
+# SUTD ISTD/CSD 2021 50.043 Database and Big Data Systems Lab 2 Exercises
 
 > James Raphael Tiovalen / 1004555
 
 ## Exercise 1
 
 A new recording studio needs to maintain the following information:
+
 - Each musician that records at Studify has an SSN, a name, and date of birth. Poorly paid musicians often live together at the same house which also has a phone.
 - Each instrument used for recording at Studify has a unique identification number, a name (e.g., guitar, synthesizer, flute) and a musical key (e.g., C, B-flat, E-flat).
 - Each album recorded has a unique identification number, a title, a copyright date, a format (e.g., CD or MC).
@@ -16,11 +17,10 @@ A new recording studio needs to maintain the following information:
 
 ER Diagram:
 
-
-
 ## Exercise 2
 
 You want to manage student clubs at the university. But you need to adhere to the following constraints:
+
 - Each student has a unique student identification number, a name, and pillar.
 - Each club has a unique name
 - Every year, students can join a club. One student may belong to different clubs in different year, but may belong to at most one club in any given year.
@@ -29,19 +29,13 @@ You want to manage student clubs at the university. But you need to adhere to th
 
 ER Diagram:
 
-
-
 ## Exercise 3
 
 Translate this to relations:
 
-
-
 ## Exercise 4
 
 Translate this to relations:
-
-
 
 ## Exercise 5
 
@@ -50,6 +44,7 @@ Given the following table which records the results of running competition at th
 Run(Name, Distance, Time)
 
 Give an expression in relational algebra that finds all runners who:
+
 - Take part in 100m category.
 - Only take part in 100m category
 
@@ -64,6 +59,7 @@ Copy(ISBN, CopyID, ShelfLocation)
 Loan (ReaderID, ISBN, CopyID, ReturnDate)
 
 Find:
+
 - The names of readers who borrow more than 10 copies of a book.
 - The title and author of book from publisher in London or New York.
 - The title and author of books that Anh Dinh borrowed.
