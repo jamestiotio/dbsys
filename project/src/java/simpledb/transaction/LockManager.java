@@ -29,7 +29,7 @@ public class LockManager {
                 if (perm == Permissions.READ_ONLY) {
                     return true;
                 } else if (perm == Permissions.READ_WRITE) {
-                    // Whether the read lock is solely hold by the same transaction
+                    // Whether the read lock is solely held by the same transaction
                     return this.lockedBy.size() == 1 && this.lockedBy.contains(tid);
                     // The RLock -> WLock upgrade is done implicitly
                 }
