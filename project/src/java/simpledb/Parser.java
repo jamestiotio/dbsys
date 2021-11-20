@@ -440,7 +440,7 @@ public class Parser {
             case "ROLLBACK":
                 if (curtrans == null)
                     throw new ParsingException(
-                            "No transaction is currently running");
+                            "No transaction is currently running.");
                 curtrans.abort();
                 curtrans = null;
                 inUserTrans = false;
@@ -451,7 +451,7 @@ public class Parser {
             case "SET TRANSACTION":
                 if (curtrans != null)
                     throw new ParsingException(
-                            "Can't start new transactions until current transaction has been committed or rolledback.");
+                            "Can't start new transactions until current transaction has been committed or rolled back.");
                 curtrans = new Transaction();
                 curtrans.start();
                 inUserTrans = true;
@@ -459,7 +459,7 @@ public class Parser {
                         + curtrans.getId().getId());
                 break;
             default:
-                throw new ParsingException("Unsupported operation");
+                throw new ParsingException("Unsupported operation.");
         }
     }
 

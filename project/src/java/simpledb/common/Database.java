@@ -2,7 +2,6 @@ package simpledb.common;
 
 import simpledb.storage.BufferPool;
 import simpledb.storage.LogFile;
-
 import java.io.*;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -66,13 +65,12 @@ public class Database {
         } catch (NoSuchFieldException | IllegalAccessException | IllegalArgumentException | SecurityException e) {
             e.printStackTrace();
         }
-//        _instance._bufferpool = new BufferPool(pages);
+        // _instance.get()._bufferpool = new BufferPool(pages);
         return _instance.get()._bufferpool;
     }
 
-    // reset the database, used for unit tests only.
+    // Reset the database, used for unit tests only.
     public static void reset() {
         _instance.set(new Database());
     }
-
 }

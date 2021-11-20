@@ -393,6 +393,7 @@ The list of relevant tests include:
   - `BufferPoolWriteTest`
   - `InsertTest`
   - `LockingTest`
+  - `DeadlockTest`
   - `TransactionTest`
 - System tests:
   - `ScanTest`
