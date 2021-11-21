@@ -1,13 +1,10 @@
-class Tree:
-    def __init__(self,value,left=None,right=None):
-        self.value = value
-        self.left = left
-        self.right = right
-    def __str__(self):
-        return "{value:%s, left:%s, right:%s}" % (str(self.value), str(self.left), str(self.right))
-    
-mytree = Tree(17, Tree(11, Tree(4), Tree(13)), Tree(5, None, Tree(30)))
+def mapper(key, text, writer):
+    cols = text.split(",")
+    supplier = cols[1]
+    price = cols[2]
+    writer.emit(supplier, price)
 
-# TODO: define fmap(f,t)
-
-# TODO: define freduce(f,t,acc)
+def reducer(supplier, prices, writer):
+    prices = list(map(float,(prices)))
+    avg = str(sum(prices)/len(prices))
+    writer.emit(supplier, avg)
