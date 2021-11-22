@@ -1,8 +1,8 @@
-# SUTD ISTD/CSD 2021 50.043 Database and Big Data Systems Lab 10 Extra Exercises
+# SUTD ISTD/CSD 2021 50.043 Database and Big Data Systems Lab 10 Extra Discussion Questions
 
 > James Raphael Tiovalen / 1004555
 
-## Exercise 1
+## Discussion Question 1
 
 1. Consider HDFS append operation, it doesn’t provide correctness! Give an example of how incorrect append could happen.
 
@@ -14,7 +14,7 @@ Another case would be when writing to the data node, the data block being writte
 
 To guarantee correctness for append, we need to block intermittent reads that could cause inconsistency. Blocking reads before writing would be expensive, since the reading process would take a much longer time.
 
-## Exercise 2
+## Discussion Question 2
 
 In a Hadoop setup, the erasure coding configuration is RS(12,6).
 1. What is the storage overhead? 6 / 12 = 50%.
@@ -22,7 +22,7 @@ In a Hadoop setup, the erasure coding configuration is RS(12,6).
 3. What is the fault tolerance level? We can afford to lose 6 out of 18 cells per codeword.
 4. What is the dimension of the Generator Matrix? 18 by 12.
 
-## Exercise 3
+## Discussion Question 3
 
 Suppose you are engaged by a client to setup a HDFS for data computation. Here are the user requirements:
 
@@ -35,3 +35,31 @@ Suppose you are engaged by a client to setup a HDFS for data computation. Here a
 1. What is the projected disk space requirement for HDFS in 3 years time? 5 * 3 * (1.8)^3 * 1.5 = 131.22 TB
 2. What is the projected disk space requirement for HDFS in 3 years time, if we replace RF=3 by RS(10,4)? 5 * ((10 + 4) / 10) * (1.8)^3 * 1.5 = 61.236 TB
 
+## Discussion Question 4
+
+Besides ensuring the semantics are deterministic, what other advantages of having pure computation in a distributed parallel computation like Hadoop?
+
+It is fault-tolerant since by using pure functions, we do not need to keep track of too many states. Re-computation (with guaranteed correctness) can be done in the case of node failures. Cost of rollback and recovery is minimized.
+
+## Discussion Question 5
+
+How do you see `map` and `reduce` being implemented in a tree-like database such MongoDB?
+
+See the implementations of `tmap` and `treduce` functions in Lab 10 Exercise 4.
+
+## Discussion Question 6
+
+Assume the following about your MapReduce job:
+
+- Input size: 1TB
+- Block size: 100MB
+- Number of reduce tasks: 10,000
+- Splits and blocks are perfectly aligned.
+
+1. How many map tasks are there?
+
+   1 TB / 100 MB = (10^12) / (10^8) = 10^4 = 10,000 map tasks.
+
+2. How many intermediate files are there?
+
+   10,000 * 10,000 = 10^8 = 100,000,000 intermediate files.
