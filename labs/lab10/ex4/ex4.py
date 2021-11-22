@@ -60,7 +60,7 @@ print(ll1)
 
 
 def llreduce(f, ll, acc):
-    # combined = map(lambda l:reduce(f,l, acc), ll)  # wrong, acc being aggregated multiple times
+    # combined = map(lambda l: reduce(f, l, acc), ll)  # wrong, acc being aggregated multiple times
     combined = map(lambda l: reduce(f, l), ll)
     return reduce(f, combined, acc)
 
