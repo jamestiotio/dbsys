@@ -37,7 +37,9 @@ print(str(tmap(lambda x: x + 1, mytree)))
 def treduce(f, t, acc):
     if t is None:
         return acc
-    # return f(f(treduce(f, t.left, acc), treduce(f, t.right, acc)), t.value)  # This also works
+    # This only works if we are using an identity accumulator (0, in this case)
+    # return f(f(treduce(f, t.left, acc), treduce(f, t.right, acc)), t.value)
+    # This works for more general cases
     return treduce(f, t.right, (treduce(f, t.left, f(t.value, acc))))
 
 
