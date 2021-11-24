@@ -1,5 +1,10 @@
 import sys
-from pyspark import SparkContext, SparkConf
+from pyspark import SparkContext, SparkConf, SparkSession
+
+"""
+sparkSession = SparkSession.builder.getOrCreate()
+sc = sparkSession.SparkContext
+"""
 
 conf = SparkConf().setAppName("Wordcount Application")
 sc = SparkContext(conf=conf)
