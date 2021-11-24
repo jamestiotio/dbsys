@@ -1,6 +1,5 @@
 import sys
 from pyspark import SparkContext, SparkConf
-from mapreduce import *
 
 conf = SparkConf().setAppName("Ex3")
 sc = SparkContext(conf=conf)
@@ -15,6 +14,8 @@ sc.stop()
 
 """
 # Map-Side Join Implementation
+
+from mapreduce import *
 
 def get_ip_address(row):
     return (row[2], 1)
