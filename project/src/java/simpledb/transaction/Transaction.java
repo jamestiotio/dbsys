@@ -46,7 +46,11 @@ public class Transaction {
             // Write abort log record and rollback transaction
             if (abort) {
                 Database.getLogFile().logAbort(tid); //does rollback too
-            } 
+            } else {
+                // Write all the dirty pages for this transaction out
+                Database.getBufferPool().flushPages(tid);
+                Database.getLogFile().logCommit(tid);
+            }
 
             // Release locks and flush pages if needed
             Database.getBufferPool().transactionComplete(tid, !abort); // release locks

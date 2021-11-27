@@ -44,10 +44,11 @@ public class BufferPool {
     // Buffer capacity
     private final int numPages;
 
-    // Map to store buffer pages (preserve original access order) with LRU cache-style implementation
+    // Map to store buffer pages (preserve original access order) with LRU cache-style
+    // implementation
     private ConcurrentHashMap<PageId, Page> pagePool;
 
-    private LockManager lockManager;
+    private final LockManager lockManager;
 
     /**
      * Creates a BufferPool that caches up to numPages pages.
@@ -89,30 +90,39 @@ public class BufferPool {
      */
     public Page getPage(TransactionId tid, PageId pid, Permissions perm)
             throws TransactionAbortedException, DbException {
-        this.lockManager.acquireLock(tid, pid, perm);
-
-        // Check if the requested page is in the pagePool
-        if (this.pagePool.containsKey(pid)) {
-            Page page = this.pagePool.get(pid);
-            // Cleverly re-use the same buffer pool instead of using another variable to track the
-            // LRU cache
-            this.pagePool.remove(pid);
-            this.pagePool.put(pid, page);
-            return page;
-        }
-
-        Page newPage = Database.getCatalog().getDatabaseFile(pid.getTableId()).readPage(pid);
-
-        if (this.numPages <= this.pagePool.size()) {
-            this.evictPage();
-        }
-
         if (perm == Permissions.READ_WRITE) {
-            newPage.markDirty(true, tid);
+            this.lockManager.acquireWriteLock(tid, pid);
+        } else if (perm == Permissions.READ_ONLY) {
+            this.lockManager.acquireReadLock(tid, pid);
+        } else {
+            throw new DbException("Invalid permission requested.");
         }
 
-        this.pagePool.put(pid, newPage);
-        return newPage;
+        synchronized (this) {
+            // Check if the requested page is in the pagePool
+            if (this.pagePool.containsKey(pid)) {
+                Page page = this.pagePool.get(pid);
+                // Cleverly re-use the same buffer pool instead of using another variable to track
+                // the
+                // LRU cache
+                this.pagePool.remove(pid);
+                this.pagePool.put(pid, page);
+                return page;
+            }
+
+            Page newPage = Database.getCatalog().getDatabaseFile(pid.getTableId()).readPage(pid);
+
+            if (this.numPages <= this.pagePool.size()) {
+                this.evictPage();
+            }
+
+            if (perm == Permissions.READ_WRITE) {
+                newPage.markDirty(true, tid);
+            }
+
+            this.pagePool.put(pid, newPage);
+            return newPage;
+        }
     }
 
     /**
@@ -137,7 +147,7 @@ public class BufferPool {
 
     /** Return true if the specified transaction has a lock on the specified page */
     public boolean holdsLock(TransactionId tid, PageId pid) {
-        return this.lockManager.txnHoldsLock(tid, pid);
+        return this.lockManager.holdsLock(tid, pid);
     }
 
     /**
@@ -147,22 +157,22 @@ public class BufferPool {
      * @param commit a flag indicating whether we should commit or abort
      */
     public void transactionComplete(TransactionId tid, boolean commit) {
-        for (Map.Entry<PageId, Page> entry : this.pagePool.entrySet()) {
-            PageId pid = entry.getKey();
-            Page page = entry.getValue();
-            if (tid.equals(page.isDirty())) {
-                if (commit) {
-                    try {
-                        flushPage(pid);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                } else { // Abort
-                    entry.setValue(page.getBeforeImage());
+        if (this.lockManager.getPagesHeldBy(tid) == null)
+            return;
+        Set<PageId> pageIds = this.lockManager.getPagesHeldBy(tid);
+        if (commit) {
+            for (PageId pageId : pageIds) {
+                try {
+                    this.flushPage(pageId);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
+        } else {
+            for (PageId pageId : pageIds)
+                this.discardPage(pageId);
         }
-        this.lockManager.txnReleaseLocks(tid);
+        this.lockManager.releaseAllLocks(tid);
     }
 
     /**
@@ -209,9 +219,6 @@ public class BufferPool {
      */
     public void deleteTuple(TransactionId tid, Tuple t)
             throws DbException, IOException, TransactionAbortedException {
-        if (t.getRecordId() == null) {
-            System.out.printf("NULL: %s%n", t.toString());
-        }
         int tableId = t.getRecordId().getPageId().getTableId();
         DbFile file = Database.getCatalog().getDatabaseFile(tableId);
         ArrayList<Page> pageArray = (ArrayList<Page>) file.deleteTuple(tid, t);
@@ -231,7 +238,7 @@ public class BufferPool {
 
     /**
      * Flush all dirty pages to disk. NB: Be careful using this routine -- it writes dirty data to
-     * disk so will break simpledb if running in NO STEAL mode.
+     * disk so will break SimpleDB if running in NO STEAL mode.
      */
     public synchronized void flushAllPages() throws IOException {
         for (Page p : this.pagePool.values()) {
@@ -249,6 +256,9 @@ public class BufferPool {
      * can be reused safely
      */
     public synchronized void discardPage(PageId pid) {
+        if (pid == null) {
+            return;
+        }
         this.pagePool.remove(pid);
     }
 
@@ -277,10 +287,10 @@ public class BufferPool {
      * Write all pages of the specified transaction to disk.
      */
     public synchronized void flushPages(TransactionId tid) throws IOException {
-        for (Page p : this.pagePool.values()) {
-            if (tid.equals(p.isDirty())) {
-                this.flushPage(p.getId());
-            }
+        if (this.lockManager.getPagesHeldBy(tid) == null)
+            return;
+        for (PageId pid : this.lockManager.getPagesHeldBy(tid)) {
+            this.flushPage(pid);
         }
     }
 
