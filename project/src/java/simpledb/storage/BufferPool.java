@@ -103,8 +103,7 @@ public class BufferPool {
             if (this.pagePool.containsKey(pid)) {
                 Page page = this.pagePool.get(pid);
                 // Cleverly re-use the same buffer pool instead of using another variable to track
-                // the
-                // LRU cache
+                // the LRU cache
                 this.pagePool.remove(pid);
                 this.pagePool.put(pid, page);
                 return page;
