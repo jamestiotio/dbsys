@@ -17,6 +17,7 @@ To guarantee correctness for append, we need to block intermittent reads that co
 ## Discussion Question 2
 
 In a Hadoop setup, the erasure coding configuration is RS(12,6).
+
 1. What is the storage overhead? 6 / 12 = 50%.
 2. What is the storage efficiency? 12 / 18 = 66.7%.
 3. What is the fault tolerance level? We can afford to lose 6 out of 18 cells per codeword.
@@ -27,7 +28,7 @@ In a Hadoop setup, the erasure coding configuration is RS(12,6).
 Suppose you are engaged by a client to setup a HDFS for data computation. Here are the user requirements:
 
 - Existing active data size 5TB
-- Estimated year-over-year data growth rate 80% 
+- Estimated year-over-year data growth rate 80%
 - 50% buffer space for intermediate/temp data file
 - HDFS replication factor 3
 
@@ -62,4 +63,4 @@ Assume the following about your MapReduce job:
 
 2. How many intermediate files are there?
 
-   10,000 * 10,000 = 10^8 = 100,000,000 intermediate files.
+   10,000 map tasks would equivalently lead to 10,000 intermediate files. The number of reduce tasks does not affect the number of intermediate files. In this case, we assume that there is no combiner.
