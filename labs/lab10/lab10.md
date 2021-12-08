@@ -2,6 +2,13 @@
 
 > James Raphael Tiovalen / 1004555
 
+If you encounter the error `Exception: HDFS health check failed`, another possible solution besides the ones specified in the lab handout would be to add these rules to the Flintrock (base and cluster) security group on AWS:
+
+- Type: `Custom TCP`, Port: `50070`, Source: `0.0.0.0/0` (or your source IP address)
+- Type: `Custom TCP`, Port: `9870`, Source: `0.0.0.0/0` (or your source IP address)
+- Type: `Custom TCP`, Port: `9000`, Source: `0.0.0.0/0` (or your source IP address)
+- Type: `Custom TCP`, Port: `8080`, Source: `0.0.0.0/0` (or your source IP address)
+
 ## Discussion Question 1
 
 1. Consider HDFS append operation, it doesn’t provide correctness! Give an example of how incorrect append could happen.

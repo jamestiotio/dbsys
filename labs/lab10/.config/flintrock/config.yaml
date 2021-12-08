@@ -1,0 +1,67 @@
+services:
+  spark:
+    version: 3.2.0
+    # git-commit: latest  # if not 'latest', provide a full commit SHA; e.g. d6dc12ef0146ae409834c78737c116050961f350
+    # git-repository:  # optional; defaults to https://github.com/apache/spark
+    # optional; defaults to download from a dynamically selected Apache mirror
+    #   - can be http, https, or s3 URL
+    #   - must contain a {v} template corresponding to the version
+    #   - Spark must be pre-built
+    #   - files must be named according to the release pattern shown here: https://dist.apache.org/repos/dist/release/spark/
+    download-source: "https://archive.apache.org/dist/spark/spark-3.2.0/"
+    # download-source: "https://www.example.com/files/spark/{v}/"
+    # download-source: "s3://some-bucket/spark/{v}/"
+    # executor-instances: 1
+  hdfs:
+    version: 3.3.1
+    # optional; defaults to download from a dynamically selected Apache mirror
+    #   - can be http, https, or s3 URL
+    #   - must contain a {v} template corresponding to the version
+    #   - files must be named according to the release pattern shown here: https://dist.apache.org/repos/dist/release/hadoop/common/
+    download-source: "https://archive.apache.org/dist/hadoop/common/hadoop-3.3.1/"
+    # download-source: "https://www.example.com/files/hadoop/{v}/"
+    # download-source: "http://www-us.apache.org/dist/hadoop/common/hadoop-{v}/"
+    # download-source: "s3://some-bucket/hadoop/{v}/"
+
+provider: ec2
+
+providers:
+  ec2:
+    key-name: sutd_db_systems_2021_jamestiotio
+    identity-file: /home/jamestiotio/.ssh/sutd_db_systems_2021_jamestiotio.pem
+    instance-type: t2.micro
+    region: ap-southeast-1
+    # availability-zone: <name>
+    ami: ami-0dc5785603ad4ff54  # Amazon Linux 2, ap-southeast-1
+    user: ec2-user
+    # ami: ami-61bbf104  # CentOS 7, us-east-1
+    # user: centos
+    # spot-price: <price>
+    # spot-request-duration: 7d  # duration a spot request is valid, supports d/h/m/s (e.g. 4d 3h 2m 1s)
+    # vpc-id: <id>
+    # subnet-id: <id>
+    # placement-group: <name>
+    # security-groups:
+    #   - group-name1
+    #   - group-name2
+    # instance-profile-name:
+    # tags:
+    #   - key1,value1
+    #   - key2, value2  # leading/trailing spaces are trimmed
+    #   - key3,  # value will be empty
+    # min-root-ebs-size-gb: <size-gb>
+    tenancy: default  # default | dedicated
+    ebs-optimized: no  # yes | no
+    instance-initiated-shutdown-behavior: terminate  # terminate | stop
+    # user-data: /path/to/userdata/script
+    # authorize-access-from:
+    #   - 10.0.0.42/32
+    #   - sg-xyz4654564xyz
+
+launch:
+  num-slaves: 3
+  install-hdfs: true
+  install-spark: true
+  java-version: 8
+
+debug: true
