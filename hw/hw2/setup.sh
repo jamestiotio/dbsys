@@ -50,6 +50,8 @@ cp core-site.xml /usr/local/hadoop/etc/hadoop/core-site.xml
 
 # Start up the services (need to do this every time you start up the environment after system reboots)
 hadoop namenode -format
+printf "Y\n" | hadoop namenode -format
 /usr/local/hadoop/sbin/start-dfs.sh && /usr/local/hadoop/sbin/start-yarn.sh
 /usr/local/spark/sbin/start-all.sh
 /usr/local/zeppelin/bin/zeppelin-daemon.sh start
+jps
