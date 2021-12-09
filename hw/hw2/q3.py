@@ -20,7 +20,8 @@ split_cols = split(df["Reviews"], "\\], \\[")
 
 df = df.withColumn("review", split_cols.getItem(0)).withColumn("date", split_cols.getItem(1))
 
-df = df.withColumn("review", split(col("review"), ",")).withColumn("date", split(col("date"), ","))
+# This should allow commas in review texts
+df = df.withColumn("review", split(col("review"), "\\', \\'")).withColumn("date", split(col("date"), "\\', \\'"))
 
 new_df = df.withColumn("new", arrays_zip("review", "date"))\
         .withColumn("new", explode("new"))\
@@ -36,4 +37,4 @@ new_df = new_df.withColumn("review", trim(new_df.review)).withColumn("date", tri
 # Sanity check
 new_df.show()
 
-new_df.write.csv("hdfs://%s:9000/assignment2/output/question3/" % (hdfs_nn), header=True)
+new_df.write.csv("hdfs://%s:9000/assignment2/output/question3/" % (hdfs_nn), header=True, emptyValue="")

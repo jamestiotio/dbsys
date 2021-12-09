@@ -47,6 +47,8 @@ rm -rf hadoop-3.3.1.tar.gz spark-3.2.0-bin-hadoop3.2.tgz zeppelin-0.10.0-bin-all
 # Other auxiliary command stuff to set up the local environment and start up all of the necessary services
 cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 cp core-site.xml /usr/local/hadoop/etc/hadoop/core-site.xml
+
+# Start up the services (need to do this every time you start up the environment after system reboots)
 hadoop namenode -format
 /usr/local/hadoop/sbin/start-dfs.sh && /usr/local/hadoop/sbin/start-yarn.sh
 /usr/local/spark/sbin/start-all.sh

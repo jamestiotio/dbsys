@@ -12,14 +12,13 @@ spark = SparkSession.builder.appName("Assigment 2 Question 1").getOrCreate()
 # YOUR CODE GOES BELOW
 
 # This returns true if the review is not empty
+# "[ [  ], [  ] ]" is actually considered as not empty, since such reviews might have been written in other languages/unencodable characters
 @udf(returnType=BooleanType())
 def is_not_empty_reviews(col1):
-    # Another super hacky way would be to check if the length of the reviews string is greater than 14:
-    # return length(col1) > 14
-    # Yet another super hacky way would be to check if the reviews is exactly equal to "[ [  ], [  ] ]":
-    # return col1 != lit("[ [  ], [  ] ]")
-    # Both of the above methods are very fragile and prone to errors.
-    return all(isinstance(x, list) for x in eval(col1)) and any(eval(col1))
+    if col1:
+        return bool(eval(col1))
+    else:
+        return bool(col1)
 
 df = spark.read.option("header", True)\
     .option("inferSchema", True)\
