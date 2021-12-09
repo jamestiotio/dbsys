@@ -9,9 +9,9 @@ For part 3 of the project, I also simply implemented most of the skeleton method
 Several design decisions that I have made include:
 
 - Implementing a `LockManager` class, as specified by the handout, which is used by the `BufferPool` class. A helper `RWLock` class was also defined.
-- Implementing strict two-phase locking at page granularity.
+- Implementing strict two-phase locking at page granularity. If we were to implement tuple-level locking, we can modify the `RWLock` class to have and keep track of a list of tuple-level holders and acquirers, which is much more granular as compared to page-level. Tuple-level locking might actually become much more costly (more overhead) since we need to manage more locks, even if it becomes less restrictive/prohibitive. In comparison, page-level locking is relatively faster (even though it would lead to more conflicts) and thus more suitable for multi-user database management systems.
 - Implementing a NO STEAL/FORCE buffer management policy.
-- Implementing a deadlock detection method by building and using a wait-for graph and then detecting cycles in said dependency graph.
+- Implementing a deadlock detection method by building and using a wait-for graph and then detecting cycles in said dependency graph. This wait-for graph mechanism can be quite costly in terms of time complexity, since we need to consult and hit the graph every time we acquire locks to check for potential presence of cycles, as well as space complexity, since we need to maintain this separate dependency graph object. Another method would be to maintain a global transaction ordering (based on the transaction ID). This way, we do not have to maintain a separate dependency graph object. However, this method also has its drawbacks since maintaining a global order can be difficult as the scale of the database goes up, and a global order might force a transaction to grab a lock earlier than it would like, tying up resources for too long.
 
 Several challenges that I have faced include:
 
