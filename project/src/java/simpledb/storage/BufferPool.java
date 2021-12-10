@@ -189,7 +189,7 @@ public class BufferPool {
      */
     public void insertTuple(TransactionId tid, int tableId, Tuple t)
             throws DbException, IOException, TransactionAbortedException {
-        HeapFile file = (HeapFile) Database.getCatalog().getDatabaseFile(tableId);
+        DbFile file = Database.getCatalog().getDatabaseFile(tableId);
         ArrayList<Page> pageArray = (ArrayList<Page>) file.insertTuple(tid, t);
         for (Page pg : pageArray) {
             pg.markDirty(true, tid);
@@ -274,8 +274,7 @@ public class BufferPool {
             if (dirty != null) {
                 Database.getLogFile().logWrite(dirty, pg.getBeforeImage(), pg);
                 Database.getLogFile().force();
-                HeapFile hpFile =
-                        (HeapFile) Database.getCatalog().getDatabaseFile(pid.getTableId());
+                DbFile hpFile = Database.getCatalog().getDatabaseFile(pid.getTableId());
                 hpFile.writePage(pg);
                 pg.markDirty(false, null);
             }

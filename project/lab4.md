@@ -385,8 +385,8 @@ The list of relevant tests include:
   - `BufferPoolWriteTest`
   - `InsertTest`
   - `LockingTest`
-  - `DeadlockTest`
   - `TransactionTest`
+  - `DeadlockTest`
   - `BTreeFileReadTest`
   - `BTreeFileInsertTest`
   - `BTreeFileDeleteTest`
