@@ -29,6 +29,8 @@ This database system is only for educational and learning purposes only! It is v
 
 Future work might include implementing query optimization, as well as rollback and recovery.
 
+For some reason, this entire project made me develop anxiety whenever I run `ant runtest -Dtest=XXX` and `ant runsystest -Dtest=XXX` in any console window. I wonder why. Make of this information what you will.
+
 ## Acknowledgement
 
 The labs are modified from the [MIT 6.830 course](http://dsg.csail.mit.edu/6.830/). We thank the MIT staff for the materials.
