@@ -2,6 +2,7 @@ import sys
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, desc, length, count, udf, lit
 from pyspark.sql.types import BooleanType
+
 # you may add more import if you need to
 
 
@@ -20,14 +21,19 @@ def is_not_empty_reviews(col1):
     else:
         return bool(col1)
 
-df = spark.read.option("header", True)\
-    .option("inferSchema", True)\
-    .option("delimiter", ",")\
-    .option("quotes", "\"")\
+
+df = (
+    spark.read.option("header", True)
+    .option("inferSchema", True)
+    .option("delimiter", ",")
+    .option("quotes", '"')
     .csv("hdfs://%s:9000/assignment2/part1/input/" % (hdfs_nn))
+)
 
 # Remove rows with no reviews or rating < 1.0
-df = df.filter(is_not_empty_reviews(col("Reviews"))).filter((col("Rating") >= 1.0) & (col("Rating").isNotNull()))
+df = df.filter(is_not_empty_reviews(col("Reviews"))).filter(
+    (col("Rating") >= 1.0) & (col("Rating").isNotNull())
+)
 
 # Sanity checks (we can do the opposite to ensure that only rows with no reviews or rating < 1.0 are removed)
 # df.groupBy(col("Reviews")).agg(count("Reviews")).sort(desc("count(Reviews)")).show()

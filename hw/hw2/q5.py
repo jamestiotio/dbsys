@@ -37,6 +37,7 @@ df = df.select("movie_id", "title", "actor1", "actor2")
 df = df.filter(col("actor1") != col("actor2"))
 
 # Sort the cast pairing arrays to make it easier to compare and count (string comparisons are generally cheaper than array comparisons)
+# This is super hacky and scuffed, but it works!
 df = df.withColumn("cast_pair", array(col("actor1"), col("actor2"))).withColumn(
     "cast_pair", array_sort(col("cast_pair")).cast("string")
 )
