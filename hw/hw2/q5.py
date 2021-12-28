@@ -36,8 +36,8 @@ df = df.select("movie_id", "title", "actor1", "actor2")
 # An actor/actress cannot co-cast with themselves... (philosophical identity question that's best not answered here hahaha!)
 df = df.filter(col("actor1") != col("actor2"))
 
-# Sort the cast pairing arrays to make it easier to compare and count (string comparisons are generally cheaper than array comparisons)
-# This is super hacky and scuffed, but it works!
+# Sort the cast pairing arrays to make it easier to compare and count (pure string comparisons are generally cheaper than array-of-strings comparisons)
+# This is super hacky and scuffed, but it works and it doesn't require any more memory than the default Hadoop and Spark settings!
 df = df.withColumn("cast_pair", array(col("actor1"), col("actor2"))).withColumn(
     "cast_pair", array_sort(col("cast_pair")).cast("string")
 )
