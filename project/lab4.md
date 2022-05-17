@@ -347,7 +347,7 @@ successfully. Please note that this test may take up to a minute to complete.
 You must submit your code (see below) as well as a short (2 pages, maximum) report describing your approach. This writeup should:
 
 - Explain any design decisions you made.
-- The lab assume locking at page level.
+- Explain the non-trivial part of your code.
 - Discuss and justify any changes you made to the API.
 - Describe any missing or incomplete elements of your code.
 
